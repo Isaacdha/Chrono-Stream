@@ -1,7 +1,13 @@
 import streamlit as st
 
 # Set the title of the app
-st.title('Chrono-Stream Overview')
+st.set_page_config(
+    page_title="Chrono Stream - Overview",
+    page_icon="🚀",
+    layout="wide"
+)
+
+st.logo('.streamlit/Logo.png', icon_image='.streamlit/Logo_small.png', size='large')
 
 # Add a header
 st.header('Welcome to Chrono-Stream')
