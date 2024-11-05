@@ -73,7 +73,36 @@ if not df.empty:
             else:   
                 st.error("Please select different columns.")
         else:
-            st.error("Please select a column with datetime data type.")
+            if df[date_column].dtype == 'object':
+                try:
+                    df[date_column] = pd.to_datetime(df[date_column])
+                    if df[date_column].dtype == 'datetime64[ns]':
+                        if date_column and value_column and date_column != value_column:
+                            st.markdown("#### Data Preview & Save")
+                            st.markdown(" ")
+                            col1, col2 = st.columns([5,5], gap = 'small')
+                            with col1:
+                                st.markdown(df[[date_column, value_column]].head().style.set_table_styles(
+                                    [{'selector': 'th', 'props': [('text-align', 'center')]},
+                                     {'selector': 'td', 'props': [('text-align', 'center')]}]
+                                ).to_html(index=False), unsafe_allow_html=True)
+                            
+                            with col2:
+                                st.write("Please check the data preview before proceeding.")
+                                if st.button("Confirm & Save Data"):
+                                    new_df = df[[date_column, value_column]].copy()
+                                    if 'filtered_df' in st.session_state:
+                                        del st.session_state['filtered_df']
+                                    st.session_state['filtered_df'] = new_df
+                                    st.success("Dataframe has been filtered and saved to session state.")
+                        else:   
+                            st.error("Please select different columns.")
+                    else:
+                        st.error("Conversion to datetime failed. Please select a column with datetime data type.")
+                except Exception as e:
+                    st.error(f"Error converting to datetime: {e}")
+            else:
+                st.error("Please select a column with datetime data type.")
         
 
 
