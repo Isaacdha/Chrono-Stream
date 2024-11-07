@@ -895,11 +895,15 @@ if begin:
                         choose_order = st.text_input("ARIMA Order", value=best_model_manual['Model'], 
                                                         help="Please input the ARIMA order manually.")
                         st.write("Current Model Choosed: ", choose_order)
+                        try:
+                            p_best, d_best, q_best = [int(i) for i in choose_order[6:-1].split(",")]
+                        except:
+                            st.error("Please input the correct ARIMA order.")
+                            st.stop()
                     confirm = button("Confirm", key="button6", help="Confirm the ARIMA order and show summary", icon="🚀")
             st.image(".streamlit/Border_H.png", use_column_width=True)
             
             if confirm:
-                p_best, d_best, q_best = [int(i) for i in choose_order[6:-1].split(",")]
                 model_best = sm.tsa.ARIMA(pd.Series(transformed_data.flatten(), index=range(1, len(transformed_data.flatten()) + 1)), 
                                             order=(p_best, d_best, q_best)).fit()
                 

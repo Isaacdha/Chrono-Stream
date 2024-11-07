@@ -1,4 +1,5 @@
 import streamlit as st
+import base64
 
 # Page Settings
 st.set_page_config(
@@ -7,21 +8,82 @@ st.set_page_config(
     layout="wide"
 )
 
-def add_logo():
+@st.cache_resource
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+bg_img = get_img_as_base64(".streamlit/Body Background.jpg")
+sb_img = get_img_as_base64(".streamlit/Sidebar Background.jpg")
+
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+background-image: url("data:image/png;base64,{bg_img}");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+}}
+
+[data-testid="stSidebar"] > div:first-child {{
+background-image: url("data:image/png;base64,{bg_img}");
+background-size: cover;
+background-position: center; 
+background-repeat: no-repeat;
+background-attachment: fixed;
+}}
+
+[data-testid="stSidebar"] {{
+    height: 100vh;
+    box-sizing: border-box;
+    border-right: 6px ridge #b1d4e3;
+    border-top: 6px ridge #b1d4e3;
+    border-bottom: 6px ridge #b1d4e3;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    overflow: clip;
+}}
+
+[data-testid="stMainBlockContainer"] {{
+    padding-top: 0px;
+}}
+
+[data-testid="stHeader"] {{
+background: rgba(0,0,0,0);
+}}
+</style>
+"""
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+# Button Style
+st.markdown("""
+<style>
+div.stButton > button:first-child {
+    background-color: #1c2c54;
+}
+</style>""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+div.stMainBlockContainer > button:first-child {
+    background-color: #1c2c54;
+}
+</style>""", unsafe_allow_html=True)
+
+def add_title():
     st.markdown(
         """
         <style>
-            [data-testid="stSidebarNav"] {
-                background-image: ".streamlit/image.png;
-                background-repeat: no-repeat;
-                padding-top: 120px;
-                background-position: 20px 20px;
-            }
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
             [data-testid="stSidebarNav"]::before {
-                content: "Chrono Stream App";
+                content: "⌛ Chrono Stream App";
                 margin-left: 20px;
-                margin-top: 0px;
-                font-size: 30px;
+                margin-top: -10px;
+                font-size: 27px;
+                font-family: 'Roboto', sans-serif;
                 position: static;
                 top: 0px;
             }
@@ -29,13 +91,19 @@ def add_logo():
         """,
         unsafe_allow_html=True,
     )
-add_logo()
+add_title()
 
-st.sidebar.title("Chrono Stream App")
-pages = {
+pages_b = {
     "Core Workflow": [
         st.Page("method/1_App Overview.py", title="App Overview", icon="🚀"),
-        st.Page("method/2_Data Input.py", title="Input Data", icon="📝"),
+        st.Page("method/2_Data Input.py", title="Data Input & Forecast Settings", icon="📝")
+    ]
+}
+
+pages_a = {
+    "Core Workflow": [
+        st.Page("method/1_App Overview.py", title="App Overview", icon="🚀"),
+        st.Page("method/2_Data Input.py", title="Data Input & Forecast Settings", icon="📝"),
         st.Page("method/3_Data Exploration.py", title="Data Exploration", icon="🔍"),
         st.Page("method/4_Result Comparison and Forecasting.py", title="Result Comparison and Forecasting", icon="📊"),
     ],
@@ -62,7 +130,7 @@ pages = {
         st.Page("method/Deterministic Trend Projection/2_Quadratic.py", title="Quadratic", icon="➿"),
         st.Page("method/Deterministic Trend Projection/3_Exponential.py", title="Exponential", icon="✴️"),
         st.Page("method/Deterministic Trend Projection/4_Logarithmic.py", title="Logarithmic", icon="❇️"),
-    ],
+    ]
 }
 
 st.logo('.streamlit/Logo.png', icon_image='.streamlit/Logo_small.png', size='large')
@@ -76,6 +144,13 @@ with st.sidebar:
             """
         )
 
+if 'filtered_df' not in st.session_state:
+    pages = pages_b
+    st.sidebar.warning("Other features will be available after data is inputted.")
+else:
+    pages = pages_a
+    st.session_state['unlocked'] = True
+    
 pg = st.navigation(pages)
 pg.run()
 
