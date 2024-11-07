@@ -6,14 +6,6 @@ import pandas as pd
 from statsmodels.tsa.api import ExponentialSmoothing, SimpleExpSmoothing, Holt
 
 
-# Page Settings
-st.set_page_config(
-    page_title="Chrono Stream - Smoothing",
-    page_icon="🧊",
-    layout="wide"
-)
-st.logo('.streamlit/Logo.png', icon_image='.streamlit/Logo_small.png', size='large')
-
 # Sidebar Settings
 with st.sidebar:
     selected = option_menu(

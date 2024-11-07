@@ -3,14 +3,6 @@ from streamlit_option_menu import option_menu
 import numpy as np
 import pandas as pd
 
-# Page Settings
-st.set_page_config(
-    page_title="Chrono Stream - Result Comparison and Forecasting",
-    page_icon="📊",
-    layout="wide"
-)
-st.logo('.streamlit/Logo.png', icon_image='.streamlit/Logo_small.png', size='large')
-
 if 'Moving_Average' in st.session_state:
     st.write(st.session_state['Moving_Average'])
 if 'Single_Exponential_Smoothing' in st.session_state:
