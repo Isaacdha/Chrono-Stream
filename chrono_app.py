@@ -15,24 +15,23 @@ def get_img_as_base64(file):
     return base64.b64encode(data).decode()
 
 bg_img = get_img_as_base64(".streamlit/Body Background.jpg")
-sb_img = get_img_as_base64(".streamlit/Sidebar Background.jpg")
 
 page_bg_img = f"""
 <style>
 [data-testid="stAppViewContainer"] {{
-background-image: url("data:image/png;base64,{bg_img}");
-background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
-background-attachment: fixed;
+    background-image: url("data:image/png;base64,{bg_img}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }}
 
 [data-testid="stSidebar"] > div:first-child {{
-background-image: url("data:image/png;base64,{bg_img}");
-background-size: cover;
-background-position: center; 
-background-repeat: no-repeat;
-background-attachment: fixed;
+    background-image: url("data:image/png;base64,{bg_img}");
+    background-size: cover;
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }}
 
 [data-testid="stSidebar"] {{
@@ -48,10 +47,11 @@ background-attachment: fixed;
 
 [data-testid="stMainBlockContainer"] {{
     padding-top: 0px;
+    background: rgba(0, 0, 10, 0.5);
 }}
 
 [data-testid="stHeader"] {{
-background: rgba(0,0,0,0);
+    background: rgba(0,0,0,0);
 }}
 </style>
 """

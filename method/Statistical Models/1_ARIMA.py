@@ -22,9 +22,6 @@ if 'filtered_df' not in st.session_state:
 else:
     data = st.session_state['filtered_df']
 
-date_column = data.iloc[:, 0]
-value_column = data.iloc[:, 1]
-
 # Metrics Function
 def metrics(data, fitted_data):
     mse = round(np.mean((data - fitted_data) ** 2), 2)
@@ -33,189 +30,123 @@ def metrics(data, fitted_data):
     rmse = round(np.sqrt(mse), 2)
     return mse, mae, mape, rmse
 
-# Yeo-Johnson Transformation Function
-def yeo_lambda_iteration(data, lambda_threshold=[0.95, 1.05], iterations_limit=None):
+def variance_stationarity_transform(data, method='yeo-johnson', lambda_threshold=[0.95, 1.05], iterations_limit=None):
     """
-    Iteratively applies Yeo-Johnson transformation until the lambda value 
-    is within the specified threshold range for variance stationarity.
+    Applies specified transformation to data iteratively until variance stationarity is achieved,
+    or applies log or square root transformation once.
 
     Parameters:
     - data: numpy array or pandas Series containing the time series data.
-    - lambda_threshold: list or tuple with two elements [low, high] specifying 
-                        the target range for lambda value to achieve variance stationarity.
-    - iterations_limit: Optional integer, maximum number of iterations to prevent infinite loops.
+    - method: String specifying the transformation method: 'yeo-johnson', 'box-cox', 'log', or 'sqrt'.
+    - lambda_threshold: list or tuple with two elements [low, high] specifying
+                        the target range for lambda value to achieve variance stationarity (only for Yeo-Johnson or Box-Cox).
+    - iterations_limit: Optional integer, maximum number of iterations to prevent infinite loops (only for Yeo-Johnson or Box-Cox).
 
     Returns:
-    - final_transformed_data: The final transformed data after achieving variance stationarity.
-    - transformers: List of PowerTransformer objects used in each iteration, 
-                    excluding the last iteration if the threshold was already met.
-    - iteration: Number of iterations performed.
+    - tuple containing:
+      - transformed_data: The transformed data.
+      - method: The transformation method used.
+      - transformers: List of PowerTransformer objects used (only for iterative methods).
+      - iterations: Number of iterations performed (only for iterative methods).
+      - final_lambda: The final lambda value achieved (only for iterative methods).
+      - lambda_df: DataFrame containing iteration and lambda values (only for iterative methods).
     """
-    transformed_data = data.values.reshape(-1, 1)  # Reshape data for PowerTransformer
-    threshold_low, threshold_high = lambda_threshold
-    transformers = []  # List to store each PowerTransformer instance
+    transformed_data = data.values.reshape(-1, 1) if hasattr(data, 'values') else data.reshape(-1, 1)
+    transformers = []
+    lambda_values = []
+    iteration_values = []
     iteration = 0
-    lambda_values = []  # List to store lambda values for each iteration
-    iteration_values = []  # List to store iteration numbers
+    final_lambda = None
+    lambda_df = None
 
-    while True and (iterations_limit is None or iteration < iterations_limit):
-        # Create a new PowerTransformer and fit the data
-        yj = PowerTransformer(method='yeo-johnson')
-        yj.fit(transformed_data)
-        lambda_value = yj.lambdas_[0]  # Extract lambda value
-        final_lambda = lambda_value
+    # Define the transformation based on the selected method
+    if method in ['yeo-johnson', 'box-cox']:
+        threshold_low, threshold_high = lambda_threshold
+        while True and (iterations_limit is None or iteration < iterations_limit):
+            # Check for negative values if using Box-Cox transformation
+            if method == 'box-cox' and (transformed_data < 0).any():
+                raise ValueError("Box-Cox transformation encountered negative values. "
+                                 "Consider using Yeo-Johnson transformation instead.")
+            
+            # Apply iterative PowerTransformer
+            transformer = PowerTransformer(method=method)
+            transformer.fit(transformed_data)
+            lambda_value = transformer.lambdas_[0]
+            final_lambda = lambda_value
+            iteration_values.append(iteration)
+            lambda_values.append(lambda_value)
 
-        # Store iteration and lambda value
-        iteration_values.append(iteration)
-        lambda_values.append(lambda_value)
+            # Check for variance stationarity threshold
+            if threshold_low <= lambda_value <= threshold_high:
+                break
 
-        # Check if lambda is within the desired threshold for variance stationarity
-        if threshold_low <= lambda_value <= threshold_high:
-            break  # Exit loop if within threshold without transforming
+            transformed_data = transformer.transform(transformed_data)
+            transformers.append(transformer)
+            iteration += 1
 
-        # Apply transformation only if the threshold is not met
-        transformed_data = yj.transform(transformed_data)
-        transformers.append(yj)  # Store the transformer after applying transformation
-        iteration += 1  # Update iteration counter
+        lambda_df = pd.DataFrame({
+            'Iteration': iteration_values,
+            'Lambda': lambda_values
+        })
 
-    # Create a DataFrame for iteration and lambda values
-    lambda_df = pd.DataFrame({
-        'Iteration': iteration_values,
-        'Lambda': lambda_values
-    })
+    elif method == 'log':
+        transformed_data = np.log(data).values if hasattr(data, 'values') else np.log(data)
+    
+    elif method == 'sqrt':
+        transformed_data = np.sqrt(data).values if hasattr(data, 'values') else np.sqrt(data)
+    
+    else:
+        raise ValueError("Invalid method. Choose from 'yeo-johnson', 'box-cox', 'log', or 'sqrt'.")
 
-    return transformed_data, transformers, iteration, final_lambda, lambda_df
+    # Return results as a tuple for direct unpacking
+    return transformed_data, method, transformers, iteration, final_lambda, lambda_df
 
-# Inverse Yeo-Johnson Transformation
-def inverse_yeo_iteration(final_transformed_data, transformers):
+def transform_back(data, result = None):
     """
-    Applies the inverse transformations to convert the final transformed data back to its original form.
+    Transforms data back to its original form using the inverse transformation 
+    specified in the result tuple.
 
     Parameters:
-    - final_transformed_data: The final transformed data after applying iterative Yeo-Johnson transformations.
-    - transformers: List of PowerTransformer objects used in each iteration in yeo_lambda_iteration.
+    - data: The transformed data to revert back to its original form.
+    - result: Tuple output from variance_stationarity_transform function,
+              containing the transformation method, transformers, and other details.
 
     Returns:
     - original_data: The data transformed back to its original form.
-    """
-    original_data = final_transformed_data
-
-    # Apply the inverse transformations in reverse order
-    for yj in reversed(transformers):
-        original_data = yj.inverse_transform(original_data)
-
-    return original_data
-
-# Box-Cox Transformation Function
-def boxcox_lambda_iteration(data, lambda_threshold=[0.95, 1.05], iterations_limit=None):
-    """
-    Iteratively applies Box-Cox transformation until the lambda value 
-    is within the specified threshold range for variance stationarity.
-    If negative values are encountered, raises an error.
-
-    Parameters:
-    - data: numpy array or pandas Series containing the time series data.
-    - lambda_threshold: list or tuple with two elements [low, high] specifying 
-                        the target range for lambda value to achieve variance stationarity.
-    - iterations_limit: Optional integer, maximum number of iterations to prevent infinite loops.
-
-    Returns:
-    - final_transformed_data: The final transformed data after achieving variance stationarity.
-    - transformers: List of PowerTransformer objects used in each iteration, 
-                    excluding the last iteration if the threshold was already met.
-    - iteration: Number of iterations performed.
-    - final_lambda: The final lambda value achieved.
-    - lambda_df: DataFrame containing iteration and lambda values.
     
     Raises:
-    - ValueError: If negative values are encountered, as Box-Cox cannot handle negatives.
+    - ValueError: If the result does not have a recognized method.
     """
-    transformed_data = data.values.reshape(-1, 1)  # Reshape data for PowerTransformer
-    threshold_low, threshold_high = lambda_threshold
-    transformers = []  # List to store each PowerTransformer instance
-    iteration = 0
-    lambda_values = []  # List to store lambda values for each iteration
-    iteration_values = []  # List to store iteration numbers
+    if result is None:
+        original_data = data
+    else:
+        # Unpack the necessary values from the result tuple
+        _, method, transformers, _, _, _ = result
 
-    while True and (iterations_limit is None or iteration < iterations_limit):
-        # Check for negative values before applying Box-Cox transformation
-        if (transformed_data < 0).any():
-            raise ValueError("Box-Cox transformation encountered negative values. "
-                             "Consider using Yeo-Johnson transformation instead.")
+        # Initialize original_data with the transformed data
+        original_data = data
 
-        # Create a new PowerTransformer with Box-Cox method and fit the data
-        bc = PowerTransformer(method='box-cox')
-        bc.fit(transformed_data)
-        lambda_value = bc.lambdas_[0]  # Extract lambda value
-        final_lambda = lambda_value
+        if method in ['yeo-johnson', 'box-cox']:
+            # Ensure transformers list is present for iterative methods
+            if transformers is None:
+                raise ValueError("Transformers not found in result; ensure result is from variance_stationarity_transform.")
+            
+            # Apply inverse transformations in reverse order for iterative methods
+            for transformer in reversed(transformers):
+                original_data = transformer.inverse_transform(original_data)
 
-        # Store iteration and lambda value
-        iteration_values.append(iteration)
-        lambda_values.append(lambda_value)
+        elif method == 'log':
+            # Inverse of log transformation is exponentiation
+            original_data = np.exp(original_data)
 
-        # Check if lambda is within the desired threshold for variance stationarity
-        if threshold_low <= lambda_value <= threshold_high:
-            print(f"Variance stationarity achieved at iteration {iteration + 1}")
-            break  # Exit loop if within threshold without transforming
+        elif method == 'sqrt':
+            # Inverse of square root transformation is squaring
+            original_data = np.square(original_data)
 
-        # Apply transformation only if the threshold is not met
-        transformed_data = bc.transform(transformed_data)
-        transformers.append(bc)  # Store the transformer after applying transformation
-        iteration += 1  # Update iteration counter
-
-    # Create a DataFrame for iteration and lambda values
-    lambda_df = pd.DataFrame({
-        'Iteration': iteration_values,
-        'Lambda': lambda_values
-    })
-
-    return transformed_data, transformers, iteration, final_lambda, lambda_df
-
-# Inverse Box-Cox Transformation
-def inverse_boxcox_iteration(final_transformed_data, transformers):
-    """
-    Applies the inverse transformations to convert the final transformed data back to its original form.
-
-    Parameters:
-    - final_transformed_data: The final transformed data after applying iterative Box-Cox transformations.
-    - transformers: List of PowerTransformer objects used in each iteration in boxcox_lambda_iteration.
-
-    Returns:
-    - original_data: The data transformed back to its original form.
-    """
-    original_data = final_transformed_data
-
-    # Apply the inverse transformations in reverse order
-    for bc in reversed(transformers):
-        original_data = bc.inverse_transform(original_data)
+        else:
+            raise ValueError("Unrecognized method in result. Ensure result is from variance_stationarity_transform.")
 
     return original_data
-
-# Log Transformation Function
-def log_transform(data):
-    """
-    Applies a log transformation to the data.
-
-    Parameters:
-    - data: numpy array or pandas Series containing the time series data.
-
-    Returns:
-    - transformed_data: The data after applying the log transformation.
-    """
-    return np.log(data).values
-
-# Square Root Transformation Function
-def sqrt_transform(data):
-    """
-    Applies a square root transformation to the data.
-
-    Parameters:
-    - data: numpy array or pandas Series containing the time series data.
-
-    Returns:
-    - transformed_data: The data after applying the square root transformation.
-    """
-    return np.sqrt(data).values
 
 # ADF Test Function
 def iterative_adf(data, threshold=0.05):
@@ -573,6 +504,7 @@ def arima_model_mass_fit(data, combination, white_noise_method="Ljung-Box", norm
     summary_df = pd.DataFrame(summary_rows)
     return summary_df
 
+# Function to select the best ARIMA model based on conditions
 def select_best_arima_model(df):
     # Step 1: Filter models with "All Significant", "Normal", "White Noise", and find the best AIC
     condition_1 = (df['Component Significance'] == 'All Significant') & \
@@ -598,6 +530,12 @@ def select_best_arima_model(df):
     # Step 4: If none are "All Significant", select directly the model with the best AIC
     return df.loc[df['AIC'].idxmin()]
 
+
+date_column = data.iloc[:, 0]
+value_column = data.iloc[:, 1]
+
+# ==========================================================================================================================#
+
 # Arima Process
 st.title("🌠 ARIMA Model")
 st.image(".streamlit/Border_H.png", use_column_width=True)
@@ -616,14 +554,17 @@ begin = button("Begin", key="begin", help="Start ARIMA model fitting", icon="�
 
 if begin:
     autoarima = st.checkbox("Use Auto ARIMA", value=False, help="Automatically select the best ARIMA model based on AIC.")
+    
     if autoarima:
+        # Use Auto ARIMA
         with st.container(border=True):
             st.warning("Auto ARIMA will only choose the model based on AIC and will ignore variance stationarity checks, assumptions, component significance, and model diagnostics.")
             auto_arima_result = pm.auto_arima(value_column, seasonal=False, stepwise=True, suppress_warnings=True)
             auto_arima_order = auto_arima_result.order
             best_model_autoarima = f"ARIMA{auto_arima_order}"
             transformed_data = np.array(value_column)
-            transformation_method = None
+            transformation_result = None 
+            
     else:
         # Check variance stationarity using Box-Cox transformation
         with st.container(border=True):
@@ -639,78 +580,76 @@ if begin:
                 """, unsafe_allow_html=True)  
             st.markdown("")
             st.image(".streamlit/Border_H.png", use_column_width=True)
+            
+            
             col1, col2 = st.columns(2)
+            
+            # Variance Stationarity
             with col1:
                 st.markdown("<h4>Variance Stationarity</h4>", unsafe_allow_html=True)
                 st.markdown("Please Select Transformation Method")
                 transformation_method = st.selectbox("Transformation Method", ["Iterative Box-Cox", "Iterative Yeo-Johnson", 
                                                                             "Log", "Square Root"])
+                
+                # If transformation method is iterative, show additional options
                 if transformation_method == "Iterative Box-Cox" or transformation_method == "Iterative Yeo-Johnson":
                     if transformation_method == "Iterative Box-Cox":
                         try:
-                            transformed_data, transformers, iterations, final_lambda = boxcox_lambda_iteration(value_column)
+                            transformation_result = variance_stationarity_transform(value_column, method='box-cox')
+                            transformed_data, _, transformers, iterations, final_lambda, lambda_df = transformation_result
                         except ValueError as e:
                             st.warning(f"{e}")
+                            st.stop()
                     elif transformation_method == "Iterative Yeo-Johnson":
-                        transformed_data, transformers, iterations, final_lambda, lambda_df = yeo_lambda_iteration(value_column) 
-                    if 'transformed_data' not in locals():
-                        st.error("Transformation was not successful. Please check your data and transformation method.")
-                        st.stop()
+                        transformation_result = variance_stationarity_transform(value_column, method='yeo-johnson')
+                        transformed_data, _, transformers, iterations, final_lambda, lambda_df = transformation_result
+                    
                     st.write(f"Iterations: {iterations} | Final Lambda Value: {round(final_lambda, 3)}")
                     st.success("Variance Stationarity Achieved")
                     with st.expander("Show Transformation History", expanded=False):
                         st.dataframe(lambda_df.set_index('Iteration'), use_container_width=True, width=200)
-                    with st.expander("Show Transformed Data", expanded=False):
-                        st.dataframe(pd.DataFrame({"Date": date_column, "Transformed Data": transformed_data.flatten()}).set_index("Date"), 
-                                    use_container_width=True, width=200)
-                    with st.expander("Show Transformed Data Plot", expanded=False):
-                        plt.figure(figsize=(10, 5))
-                        plt.plot(date_column, transformed_data, label="Transformed Data")
-                        plt.xlabel("Date")
-                        plt.ylabel("Transformed Data")
-                        plt.legend()
-                        st.pyplot(plt)
 
-                if transformation_method == "Log":
-                    transformed_data = log_transform(value_column)
-                    with st.expander("Show Transformed Data", expanded=False):
-                        st.dataframe(pd.DataFrame({"Date": date_column, "Transformed Data": transformed_data.flatten()}).set_index("Date"), 
-                                    use_container_width=True, width=200)  
-                    with st.expander("Show Transformed Data Plot", expanded=False):
-                        plt.figure(figsize=(10, 5))
-                        plt.plot(date_column, transformed_data, label="Transformed Data")
-                        plt.xlabel("Date")
-                        plt.ylabel("Transformed Data")
-                        plt.legend()
-                        st.pyplot(plt)                  
-                    st.success("Log Transformation Successful")
-                    
-                if transformation_method == "Square Root":
-                    transformed_data = sqrt_transform(value_column)
-                    with st.expander("Show Transformed Data", expanded=False):
-                        st.dataframe(pd.DataFrame({"Date": date_column, "Transformed Data": transformed_data.flatten()}).set_index("Date"), 
-                                    use_container_width=True, width=200)
-                    with st.expander("Show Transformed Data Plot", expanded=False):
-                        plt.figure(figsize=(10, 5))
-                        plt.plot(date_column, transformed_data, label="Transformed Data")
-                        plt.xlabel("Date")
-                        plt.ylabel("Transformed Data")
-                        plt.legend()
-                        st.pyplot(plt)
-                    st.success("Square Root Transformation Successful")
-                    
+                # If transformation method is Log or Square Root, apply transformation once
+                if transformation_method == "Log" or transformation_method == "Square Root":
+                    if transformation_method == "Log":
+                        transformation_result = variance_stationarity_transform(value_column, method='log')
+                        transformed_data, _, _, _, _, _ = transformation_result
+                        st.success("Log Transformation Successful")
+                    elif transformation_method == "Square Root":
+                        transformation_result = variance_stationarity_transform(value_column, method='sqrt')
+                        transformed_data, _, _, _, _, _ = transformation_result
+                        st.success("Square Root Transformation Successful")
+                
+                # If transformation is not successful, stop the process
                 if 'transformed_data' not in locals():
                     st.error("Transformation was not successful. Please check your data and transformation method.")
                     st.stop()
-                    
+                
+                # Display transformed data and plot
+                with st.expander("Show Transformed Data", expanded=False):
+                    st.dataframe(pd.DataFrame({"Date": date_column, "Transformed Data": transformed_data.flatten()}).set_index("Date"), 
+                                use_container_width=True, width=200)  
+                with st.expander("Show Transformed Data Plot", expanded=False):
+                    plt.figure(figsize=(10, 5))
+                    plt.plot(date_column, transformed_data, label="Transformed Data")
+                    plt.xlabel("Date")
+                    plt.ylabel("Transformed Data")
+                    plt.legend()
+                    st.pyplot(plt)                  
+            
+            # Mean Stationarity
             with col2:
                 st.markdown("<h4>Mean Stationarity</h4>", unsafe_allow_html=True)
                 st.markdown("Please Select Stationarity Test")
                 stationarity_test = st.selectbox("Stationarity Test", ["Augmented Dickey-Fuller", "Kwiatkowski-Phillips-Schmidt-Shin"]) 
+                
+                # Perform ADF or KPSS test for mean stationarity
                 if stationarity_test == "Augmented Dickey-Fuller":
                     diffed_data, d, differencing_history = iterative_adf(pd.Series(transformed_data.flatten()))
                 elif stationarity_test == "Kwiatkowski-Phillips-Schmidt-Shin":
                     diffed_data, d, differencing_history = iterative_kpss(pd.Series(transformed_data.flatten()))
+                
+                # Display differencing history and differenced data
                 st.write(f"Number of Differencing (d): {d}")
                 st.success("Mean Stationarity Achieved")
                 with st.expander("Show Differencing History", expanded=False):
@@ -726,29 +665,41 @@ if begin:
                     plt.legend()
                     st.pyplot(plt)
             
+            # Self Insert d Order
             st.image(".streamlit/Border_H.png", use_column_width=True)
             col1, col2 = st.columns(2)
+            
+            # Override d
             with col1:
                 override_d = st.checkbox("Override d", value=False, help="Override the number of differencing if the result is not as expected.")
                 trans_data_pd = pd.Series(transformed_data.flatten())
+                
                 if override_d:
                     d = st.number_input("d (differencing order)", value=d, min_value=0, help="Please input the number of differencing manually.")
+                
                 # Differencing data 'd' times
                 diffed_data = trans_data_pd.copy()
                 for _ in range(int(d)):
                     diffed_data = diffed_data.diff().dropna() 
+                    
+                # Button to continue to ARIMA Tentative Order
                 continue_tentative = button("Continue to ARIMA Tentative Order", key="button3", help="Continue to ARIMA Tentative Order", icon="🌫️")
+            
+            # ACF Plot to aid in d selection
             with col2:
                 if override_d:
                     with st.container(border=True):
                         st.markdown('<div style="text-align: center; font-weight: bold;">ACF Plot to Check d Manually</div>', unsafe_allow_html=True)
                         st.markdown('<div style="font-size: 12px;"></div>', unsafe_allow_html=True)
+                        
                         # Calculate ACF values
                         fig_acf = plot_acf(diffed_data, lags=20)
                         fig_acf.tight_layout()
                         st.pyplot(fig_acf)
         
         st.markdown(" ")
+        
+        # Continue to ARIMA Tentative Order
         if continue_tentative:
             with st.container(border=True):
                 st.subheader("🌫️ ARIMA Tentative Model")
@@ -764,15 +715,22 @@ if begin:
                 st.markdown("")
                 st.image(".streamlit/Border_H.png", use_column_width=True)
                 st.markdown("#### ARIMA Order Selection")
+                
                 autosearch = st.checkbox("Auto Order", value=True, help="Automatically Pass the order of ARIMA component to next phase based on ACF and PACF.")
                 
+                # If autosearch is enabled, find the AR and MA orders
                 if autosearch:
                     p_order, q_order = order_finder(diffed_data)
                     st.success(f"Found significant AR (p) orders: {p_order}")
                     st.success(f"Found significant MA (q) orders: {q_order}")
+                    
+                # If autosearch is disabled, allow manual input of AR and MA orders
                 else:
                     p, q = None, None
+                    
+                    # Input for AR order
                     col1, col2 = st.columns(2)
+                    
                     with col1:
                         st.markdown('Please select the AR() order that want to be checked manually. Example input: "1, 2, 3" without quotes')
                         p = st.text_input("(p)") #Example input: "1, 2, 3"
@@ -782,6 +740,7 @@ if begin:
                             st.warning("No input detected. Defaulting to [0, 1].")
                         else:
                             st.info(f"Order Inputted : {p_order}")
+                            
                     with col2:
                         with st.container(border=True):
                             # Calculate PACF values
@@ -789,7 +748,9 @@ if begin:
                             fig_pacf.tight_layout()
                             st.pyplot(fig_pacf)
                     
+                    # Input for MA order
                     col1, col2 = st.columns(2)
+                    
                     with col1:
                         st.markdown('Please select the MA() order that want to be checked manually. Example input: "1, 2, 3" without quotes')
                         q = st.text_input("(q)") #Example input: "1, 2, 3"
@@ -799,6 +760,7 @@ if begin:
                             st.warning("No input detected. Defaulting to [0, 1].")
                         else:
                             st.info(f"Order Inputted : {q_order}")
+                            
                     with col2:
                         with st.container(border=True):
                             # Calculate ACF values
@@ -806,12 +768,17 @@ if begin:
                             fig_acf.tight_layout()
                             st.pyplot(fig_acf)
                 
+                # Generate combinations based on AR and MA orders
                 if p_order != None and q_order != None:
                     combinations = generate_combination(p_order, d, q_order)
                     st.success(f"Generated {len(combinations)} combinations for ARIMA model : {combinations}")
+                
+                # Button to continue to ARIMA Model Fit
                 continue_modelfit = button("Continue to ARIMA Model Fit", key="button4", help="Continue to ARIMA Model Fit", icon="🌞")
                 
             st.markdown("")
+            
+            # Continue to ARIMA Model Fit
             if continue_modelfit and continue_tentative:
                 with st.container(border=True):
                     st.subheader("🌞 ARIMA Model Diagnostic & Mass Fit")
@@ -826,24 +793,32 @@ if begin:
                         """, unsafe_allow_html=True)  
                     st.markdown("")
                     st.image(".streamlit/Border_H.png", use_column_width=True)
+                    
+                    # ARIMA Model Diagnostic Settings
                     st.markdown("### ⚙️ ARIMA Model Diagnostic Settings")
                     
                     col1, col2, col3 = st.columns(3)
                     with col1:
+                        # Select Normality Test
                         with st.container(border=True):
                             st.markdown("Select Normality Test")
                             normality = st.selectbox("Normality Test", ["Jarque-Bera", "Shapiro-Wilk", "Kolmogorov-Smirnov", "Anderson-Darling", "Lilliefors"])
                     with col2:
+                        # Select White Noise Test
                         with st.container(border=True): 
                             st.markdown("Select White Noise Test")
                             white_noise = st.selectbox("White Noise Test", ["Ljung-Box", "Box-Pierce"])
                     with col3:
+                        # Select Significance Level
                         with st.container(border=True):
                             st.markdown("Select Significance Level")
-                            sign = st.number_input("Significance Level", value=0.05, min_value=0.01, max_value=0.1, step=0.01)
-                
+                            sign = st.number_input("Significance Level", value=0.05, min_value=0.01, max_value=1.0, step=0.01)
+
+                    # Button to continue to Mass Fit Model
                     continuemassfit = button("Begin Mass Fit Model", key="button5", help="Apply Setting and Run Mass-Fit Model", icon="🔄")
                     st.image(".streamlit/Border_H.png", use_column_width=True)
+                    
+                    # Continue to Mass Fit Model
                     if continuemassfit:
                         st.markdown("### 📋 ARIMA Model List")
                         st.write("The table below shows the summary of ARIMA models fitted with different combinations of AR, I, and MA orders.")
@@ -854,10 +829,12 @@ if begin:
                         st.image(".streamlit/Border_H.png", use_column_width=True)
             
             st.markdown(" ")
-            
+    
+    # Interactivity for ARIMA Model Selection
     proceed_forecast = False  
     choose_order = None
-                
+    
+    # Best ARIMA Model Selection
     if ("model_collection" in globals() or "best_model_autoarima" in globals()) and \
     (("model_collection" in globals() and model_collection is not None and len(model_collection) > 0) or \
         ("best_model_autoarima" in globals() and best_model_autoarima is not None and len(best_model_autoarima) > 0)):
@@ -866,17 +843,29 @@ if begin:
             best_model_manual = select_best_arima_model(model_collection) if "model_collection" in globals() else None
             st.subheader("🏆 Best ARIMA Model")
             
+            # If auto ARIMA is used, show the model and allow manual override
             if "best_model_autoarima" in globals() and best_model_autoarima is not None:
                 st.info("A model is detected from auto ARIMA function. You can choose another order if needed.")
                 st.info(f"Auto ARIMA Model: {best_model_autoarima}")
+                
+                # Pass the auto ARIMA order to the next phase
                 choose_order = best_model_autoarima
+                p_best, d_best, q_best = [int(i) for i in choose_order[6:-1].split(",")]
+                
+                # Allow manual override
                 change_order = st.checkbox("Change Order", value=False, help="Change the ARIMA order manually.")
                 if change_order:
                     choose_order = st.text_input("ARIMA Order", value=best_model_autoarima, 
                             help="Please input the ARIMA order manually.")
-                    st.write("Current Model Choosed: ", choose_order)
+                    try:
+                        p_best, d_best, q_best = [int(i) for i in choose_order[6:-1].split(",")]
+                    except:
+                        st.error("Please input the correct ARIMA order.")
+                        st.stop()
+                    st.write("Current Model Choosed: ", choose_order)                
                 confirm = button("Confirm", key="button6", help="Confirm the ARIMA order and show summary", icon="🚀")
-                
+            
+            # If manual ARIMA is used, show the model and allow manual override
             if best_model_manual is not None:
                 col1, col2 = st.columns(2)
                 with col1:
@@ -901,27 +890,17 @@ if begin:
                             st.error("Please input the correct ARIMA order.")
                             st.stop()
                     confirm = button("Confirm", key="button6", help="Confirm the ARIMA order and show summary", icon="🚀")
+           
             st.image(".streamlit/Border_H.png", use_column_width=True)
             
+            # Show the best ARIMA model summary
             if confirm:
                 model_best = sm.tsa.ARIMA(pd.Series(transformed_data.flatten(), index=range(1, len(transformed_data.flatten()) + 1)), 
                                             order=(p_best, d_best, q_best)).fit()
                 
                 fitted_val = model_best.fittedvalues.to_numpy().reshape(-1, 1)
-                # Inverse Transformation depends on the transformation method
-                if transformation_method == "Iterative Box-Cox":
-                    fitted_val = inverse_boxcox_iteration(fitted_val, transformers)
-                elif transformation_method == "Iterative Yeo-Johnson":
-                    fitted_val = inverse_yeo_iteration(fitted_val, transformers)
-                elif transformation_method == "Log":
-                    fitted_val = np.exp(fitted_val)
-                elif transformation_method == "Square Root":
-                    fitted_val = fitted_val ** 2
-                elif transformation_method == None:
-                    fitted_val = fitted_val
-                else:
-                    st.error("Transformation method not found.")
-                    st.stop()
+                fitted_val = transform_back(fitted_val, transformation_result)
+                
                 mse, mae, mape, rmse = metrics(value_column[d_best:], fitted_val.flatten()[d_best:]) #the metric calculation omit the first d value
                 
                 st.subheader("📌 Best ARIMA Model Summary")
@@ -944,23 +923,10 @@ if begin:
         with st.container(border=True):
             st.markdown("### 🔮 ARIMA Model Forecast")
             forecast_period = st.session_state['forecast_period']
+            
             forecast = model_best.forecast(forecast_period)
             forecast = forecast.to_numpy().reshape(-1, 1)
-            
-            # Inverse Transformation depends on the transformation method
-            if transformation_method == "Iterative Box-Cox":
-                forecast = inverse_boxcox_iteration(forecast, transformers)
-            elif transformation_method == "Iterative Yeo-Johnson":
-                forecast = inverse_yeo_iteration(forecast, transformers)
-            elif transformation_method == "Log":
-                forecast = np.exp(forecast)
-            elif transformation_method == "Square Root":
-                forecast = forecast ** 2
-            elif transformation_method == None:
-                forecast = forecast
-            else:
-                st.error("Transformation method not found.")
-                st.stop()
+            forecast = transform_back(forecast, transformation_result)
                 
             forecast_df = st.session_state['forecast_template'].copy()
             forecast_df.iloc[:forecast_period, 1] = forecast
