@@ -423,6 +423,7 @@ def normality_residual_test(model, significance=0.05, method="Jarque-Bera"):
     
     return pd.DataFrame([test_results])
 
+
 # Function to take components and components significance from ARIMA model
 def arima_extract_parameters(model, significance=0.05):
     # Extract parameters and p-values, omitting the last row
@@ -778,57 +779,7 @@ if begin:
                 
             st.markdown("")
             
-            # Continue to ARIMA Model Fit
-            if continue_modelfit and continue_tentative:
-                with st.container(border=True):
-                    st.subheader("🌞 ARIMA Model Diagnostic & Mass Fit")
-                    st.markdown("""
-                        <div style="text-align: justify;">
-                        ARIMA model diagnostics assess the fit and reliability of a model by examining key criteria. Component significance checks if each parameter (p, d, q) adds value; non-significant terms can be removed to streamline the model. White noise residuals indicate that errors have no patterns and are centered around zero, confirming that the model captures all correlations. Normality of residuals suggests that errors follow a normal distribution, while non-normal residuals may indicate a need for data transformation or model adjustment.
-                        </div>
-                        <br>
-                        <div style="text-align: justify;">
-                        Model comparison criteria—AIC, BIC, and HQIC allow for a balance between fit and complexity. Lower values in these criteria indicate a better-fitting model that doesn’t overfit. Together, these diagnostics help ensure the ARIMA model is both parsimonious and accurate. In this section, you can set the diagnostic settings for the ARIMA model, launch mass fit model, and view the results.
-                        </div>
-                        """, unsafe_allow_html=True)  
-                    st.markdown("")
-                    st.image(".streamlit/Border_H.png", use_column_width=True)
-                    
-                    # ARIMA Model Diagnostic Settings
-                    st.markdown("### ⚙️ ARIMA Model Diagnostic Settings")
-                    
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        # Select Normality Test
-                        with st.container(border=True):
-                            st.markdown("Select Normality Test")
-                            normality = st.selectbox("Normality Test", ["Jarque-Bera", "Shapiro-Wilk", "Kolmogorov-Smirnov", "Anderson-Darling", "Lilliefors"])
-                    with col2:
-                        # Select White Noise Test
-                        with st.container(border=True): 
-                            st.markdown("Select White Noise Test")
-                            white_noise = st.selectbox("White Noise Test", ["Ljung-Box", "Box-Pierce"])
-                    with col3:
-                        # Select Significance Level
-                        with st.container(border=True):
-                            st.markdown("Select Significance Level")
-                            sign = st.number_input("Significance Level", value=0.05, min_value=0.01, max_value=1.0, step=0.01)
-
-                    # Button to continue to Mass Fit Model
-                    continuemassfit = button("Begin Mass Fit Model", key="button5", help="Apply Setting and Run Mass-Fit Model", icon="🔄")
-                    st.image(".streamlit/Border_H.png", use_column_width=True)
-                    
-                    # Continue to Mass Fit Model
-                    if continuemassfit:
-                        st.markdown("### 📋 ARIMA Model List")
-                        st.write("The table below shows the summary of ARIMA models fitted with different combinations of AR, I, and MA orders.")
-                        model_collection = arima_model_mass_fit(pd.Series(transformed_data.flatten(), index=range(1, len(transformed_data.flatten()) + 1)), 
-                                                                combinations, normality_method=normality, white_noise_method=white_noise,
-                                                                sign=sign)
-                        st.dataframe(model_collection, use_container_width=True, selection_mode='single-row', key='arima_model_mass_fit')
-                        st.image(".streamlit/Border_H.png", use_column_width=True)
-            
-            st.markdown(" ")
+ c
     
     # Interactivity for ARIMA Model Selection
     proceed_forecast = False  
