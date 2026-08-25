@@ -459,6 +459,229 @@ FECHNER_1860 = _reference(
 )
 
 
+# Baseline-forecast foundations and benchmark literature
+PEARSON_1905 = _reference(
+    "Pearson, K. (1905). The problem of the random walk. Nature, 72, 294. "
+    "https://doi.org/10.1038/072294b0",
+    "https://doi.org/10.1038/072294b0",
+    "Introduces the random-walk terminology underlying last-value persistence models.",
+)
+HYNDMAN_ATHANASOPOULOS_2021 = _reference(
+    "Hyndman, R. J., & Athanasopoulos, G. (2021). Forecasting: Principles "
+    "and practice (3rd ed.). OTexts. https://otexts.com/fpp3/",
+    "https://otexts.com/fpp3/",
+    "Gives the modern forecasting equations for naive, seasonal-naive, and drift benchmarks.",
+)
+HYNDMAN_KOEHLER_2006 = _reference(
+    "Hyndman, R. J., & Koehler, A. B. (2006). Another look at measures of "
+    "forecast accuracy. International Journal of Forecasting, 22(4), 679–688. "
+    "https://doi.org/10.1016/j.ijforecast.2006.03.001",
+    "https://doi.org/10.1016/j.ijforecast.2006.03.001",
+    "Establishes naive and seasonal-naive errors as meaningful scale denominators for forecast comparison.",
+)
+MAKRIDAKIS_HIBON_2000 = _reference(
+    "Makridakis, S., & Hibon, M. (2000). The M3-Competition: Results, "
+    "conclusions and implications. International Journal of Forecasting, "
+    "16(4), 451–476. https://doi.org/10.1016/S0169-2070(00)00057-1",
+    "https://doi.org/10.1016/S0169-2070(00)00057-1",
+    "Demonstrates the continuing role of simple benchmark methods in large empirical forecast comparisons.",
+)
+
+# Lag-regression, tree, kernel, and automatic-classical foundations
+TASHMAN_2000 = _reference(
+    "Tashman, L. J. (2000). Out-of-sample tests of forecasting accuracy: An "
+    "analysis and review. International Journal of Forecasting, 16(4), 437–450. "
+    "https://doi.org/10.1016/S0169-2070(00)00065-0",
+    "https://doi.org/10.1016/S0169-2070(00)00065-0",
+    "Establishes expanding and rolling forecast-origin evaluation as a predictive model-selection design.",
+)
+HOERL_KENNARD_1970 = _reference(
+    "Hoerl, A. E., & Kennard, R. W. (1970). Ridge regression: Biased "
+    "estimation for nonorthogonal problems. Technometrics, 12(1), 55–67. "
+    "https://doi.org/10.1080/00401706.1970.10488634",
+    "https://doi.org/10.1080/00401706.1970.10488634",
+    "Introduces ridge shrinkage for unstable least-squares estimates under correlated predictors.",
+)
+TIBSHIRANI_1996 = _reference(
+    "Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. "
+    "Journal of the Royal Statistical Society: Series B (Methodological), "
+    "58(1), 267–288. https://doi.org/10.1111/j.2517-6161.1996.tb02080.x",
+    "https://doi.org/10.1111/j.2517-6161.1996.tb02080.x",
+    "Defines the L1-constrained regression estimator that can set coefficients exactly to zero.",
+)
+ZOU_HASTIE_2005 = _reference(
+    "Zou, H., & Hastie, T. (2005). Regularization and variable selection via "
+    "the elastic net. Journal of the Royal Statistical Society: Series B "
+    "(Statistical Methodology), 67(2), 301–320. "
+    "https://doi.org/10.1111/j.1467-9868.2005.00503.x",
+    "https://doi.org/10.1111/j.1467-9868.2005.00503.x",
+    "Defines Elastic Net's combined L1/L2 penalty and grouping behavior for correlated predictors.",
+)
+BREIMAN_ET_AL_1984 = _reference(
+    "Breiman, L., Friedman, J. H., Olshen, R. A., & Stone, C. J. (1984). "
+    "Classification and regression trees. Wadsworth. "
+    "https://doi.org/10.1201/9781315139470",
+    "https://doi.org/10.1201/9781315139470",
+    "Provides the defining CART methodology for recursive partitioning and regression-tree pruning.",
+)
+BREIMAN_2001 = _reference(
+    "Breiman, L. (2001). Random forests. Machine Learning, 45(1), 5–32. "
+    "https://doi.org/10.1023/A:1010933404324",
+    "https://doi.org/10.1023/A:1010933404324",
+    "Defines Random Forest ensembles based on randomized tree predictors and feature selection.",
+)
+GEURTS_ET_AL_2006 = _reference(
+    "Geurts, P., Ernst, D., & Wehenkel, L. (2006). Extremely randomized "
+    "trees. Machine Learning, 63(1), 3–42. "
+    "https://doi.org/10.1007/s10994-006-6226-1",
+    "https://doi.org/10.1007/s10994-006-6226-1",
+    "Defines Extra Trees and its additional randomization of both attributes and split thresholds.",
+)
+DRUCKER_ET_AL_1997 = _reference(
+    "Drucker, H., Burges, C. J. C., Kaufman, L., Smola, A., & Vapnik, V. "
+    "(1997). Support vector regression machines. In M. C. Mozer, M. Jordan, "
+    "& T. Petsche (Eds.), Advances in neural information processing systems "
+    "9 (pp. 155–161). MIT Press. "
+    "https://papers.nips.cc/paper/1238-support-vector-regression-machines",
+    "https://papers.nips.cc/paper/1238-support-vector-regression-machines",
+    "Provides an early empirical application and comparison of support-vector regression.",
+)
+SMOLA_SCHOLKOPF_2004 = _reference(
+    "Smola, A. J., & Schölkopf, B. (2004). A tutorial on support vector "
+    "regression. Statistics and Computing, 14(3), 199–222. "
+    "https://doi.org/10.1023/B:STCO.0000035301.49549.88",
+    "https://doi.org/10.1023/B:STCO.0000035301.49549.88",
+    "Provides a later tutorial treatment of the epsilon-insensitive objective, kernels, regularization, and SVR algorithms.",
+)
+VAPNIK_1995 = _reference(
+    "Vapnik, V. N. (1995). The nature of statistical learning theory. "
+    "Springer. https://doi.org/10.1007/978-1-4757-2440-0",
+    "https://doi.org/10.1007/978-1-4757-2440-0",
+    "Establishes the statistical-learning and support-vector function-estimation framework underlying epsilon-SVR.",
+)
+VAPNIK_GOLOWICH_SMOLA_1997 = _reference(
+    "Vapnik, V., Golowich, S. E., & Smola, A. J. (1997). Support vector "
+    "method for function approximation, regression estimation and signal "
+    "processing. In M. Mozer, M. Jordan, & T. Petsche (Eds.), Advances in "
+    "neural information processing systems 9 (pp. 281–287). MIT Press. "
+    "https://proceedings.neurips.cc/paper/1996/hash/4f284803bd0966cc24fa8683a34afc6e-Abstract.html",
+    "https://proceedings.neurips.cc/paper/1996/hash/4f284803bd0966cc24fa8683a34afc6e-Abstract.html",
+    "Presents the support-vector method for function approximation and real-valued regression estimation.",
+)
+STONE_1977 = _reference(
+    "Stone, C. J. (1977). Consistent nonparametric regression. The Annals "
+    "of Statistics, 5(4), 595–620. https://doi.org/10.1214/aos/1176343886",
+    "https://doi.org/10.1214/aos/1176343886",
+    "Establishes consistency conditions that include nearest-neighbor probability-weight regression rules.",
+)
+ALTMAN_1992 = _reference(
+    "Altman, N. S. (1992). An introduction to kernel and nearest-neighbor "
+    "nonparametric regression. The American Statistician, 46(3), 175–185. "
+    "https://doi.org/10.1080/00031305.1992.10475879",
+    "https://doi.org/10.1080/00031305.1992.10475879",
+    "Explains nearest-neighbor regression as a local conditional-location estimator and its tuning tradeoffs.",
+)
+ASSIMAKOPOULOS_NIKOLOPOULOS_2000 = _reference(
+    "Assimakopoulos, V., & Nikolopoulos, K. (2000). The Theta model: A "
+    "decomposition approach to forecasting. International Journal of "
+    "Forecasting, 16(4), 521–530. "
+    "https://doi.org/10.1016/S0169-2070(00)00066-2",
+    "https://doi.org/10.1016/S0169-2070(00)00066-2",
+    "Introduces Theta lines and the conventional theta-zero/theta-two forecast combination.",
+)
+HYNDMAN_BILLAH_2003 = _reference(
+    "Hyndman, R. J., & Billah, B. (2003). Unmasking the Theta method. "
+    "International Journal of Forecasting, 19(2), 287–290. "
+    "https://doi.org/10.1016/S0169-2070(01)00143-1",
+    "https://doi.org/10.1016/S0169-2070(01)00143-1",
+    "Derives the simpler equivalence between the classical Theta forecast and SES with drift.",
+)
+FIORUCCI_ET_AL_2016 = _reference(
+    "Fiorucci, J. A., Pellegrini, T. R., Louzada, F., Petropoulos, F., & "
+    "Koehler, A. B. (2016). Models for optimising the theta method and their "
+    "relationship to state space models. International Journal of Forecasting, "
+    "32(4), 1151–1161. https://doi.org/10.1016/j.ijforecast.2016.02.005",
+    "https://doi.org/10.1016/j.ijforecast.2016.02.005",
+    "Generalizes Theta by selecting the short-term theta line rather than fixing the classical theta-two value.",
+)
+HYNDMAN_ET_AL_2002 = _reference(
+    "Hyndman, R. J., Koehler, A. B., Snyder, R. D., & Grose, S. (2002). A "
+    "state space framework for automatic forecasting using exponential "
+    "smoothing methods. International Journal of Forecasting, 18(3), "
+    "439–454. https://doi.org/10.1016/S0169-2070(01)00110-8",
+    "https://doi.org/10.1016/S0169-2070(01)00110-8",
+    "Defines the ETS taxonomy, likelihood criteria, automatic selection, and state-space intervals.",
+)
+HYNDMAN_ET_AL_2008 = _reference(
+    "Hyndman, R. J., Koehler, A. B., Ord, J. K., & Snyder, R. D. (2008). "
+    "Forecasting with exponential smoothing: The state space approach. "
+    "Springer. https://doi.org/10.1007/978-3-540-71918-2",
+    "https://doi.org/10.1007/978-3-540-71918-2",
+    "Develops the innovation state-space ETS family, estimation, selection, and forecast distributions in detail.",
+)
+DE_LIVERA_ET_AL_2011 = _reference(
+    "De Livera, A. M., Hyndman, R. J., & Snyder, R. D. (2011). Forecasting "
+    "time series with complex seasonal patterns using exponential smoothing. "
+    "Journal of the American Statistical Association, 106(496), 1513–1527. "
+    "https://doi.org/10.1198/jasa.2011.tm09771",
+    "https://doi.org/10.1198/jasa.2011.tm09771",
+    "Defines the TBATS framework for multiple, high-frequency, and non-integer seasonality.",
+)
+CROSTON_1972 = _reference(
+    "Croston, J. D. (1972). Forecasting and stock control for intermittent "
+    "demands. Operational Research Quarterly, 23(3), 289–303. "
+    "https://doi.org/10.1057/jors.1972.50",
+    "https://doi.org/10.1057/jors.1972.50",
+    "Introduces separate exponential smoothing of nonzero demand sizes and inter-demand intervals.",
+)
+SYNTETOS_BOYLAN_2005 = _reference(
+    "Syntetos, A. A., & Boylan, J. E. (2005). The accuracy of intermittent "
+    "demand estimates. International Journal of Forecasting, 21(2), 303–314. "
+    "https://doi.org/10.1016/j.ijforecast.2004.10.001",
+    "https://doi.org/10.1016/j.ijforecast.2004.10.001",
+    "Analyzes Croston's bias and establishes the correction used by the SBA variant.",
+)
+TEUNTER_ET_AL_2011 = _reference(
+    "Teunter, R. H., Syntetos, A. A., & Babai, M. Z. (2011). Intermittent "
+    "demand: Linking forecasting to inventory obsolescence. European Journal "
+    "of Operational Research, 214(3), 606–615. "
+    "https://doi.org/10.1016/j.ejor.2011.05.018",
+    "https://doi.org/10.1016/j.ejor.2011.05.018",
+    "Defines TSB's separate smoothing of demand occurrence probability and positive demand size.",
+)
+MSTL_2025 = _reference(
+    "Bandara, K., Hyndman, R. J., & Bergmeir, C. (2025). MSTL: A "
+    "seasonal-trend decomposition algorithm for time series with multiple "
+    "seasonal patterns. International Journal of Operational Research, 52(1), "
+    "79–98. https://doi.org/10.1504/IJOR.2025.143957",
+    "https://doi.org/10.1504/IJOR.2025.143957",
+    "Defines MSTL's iterative use of STL to estimate multiple seasonal components.",
+)
+ORESHKIN_ET_AL_2020 = _reference(
+    "Oreshkin, B. N., Carpov, D., Chapados, N., & Bengio, Y. (2020). "
+    "N-BEATS: Neural basis expansion analysis for interpretable time series "
+    "forecasting. In International Conference on Learning Representations. "
+    "https://openreview.net/forum?id=r1ecqn4YwB",
+    "https://openreview.net/forum?id=r1ecqn4YwB",
+    "Introduces N-BEATS backcast/forecast blocks, doubly residual stacking, and generic and interpretable variants.",
+)
+BAI_ET_AL_2018 = _reference(
+    "Bai, S., Kolter, J. Z., & Koltun, V. (2018). An empirical evaluation of "
+    "generic convolutional and recurrent networks for sequence modeling. "
+    "arXiv. https://doi.org/10.48550/arXiv.1803.01271",
+    "https://doi.org/10.48550/arXiv.1803.01271",
+    "Defines and evaluates a generic residual TCN built from causal dilated convolutions.",
+)
+VAN_DEN_OORD_ET_AL_2016 = _reference(
+    "van den Oord, A., Dieleman, S., Zen, H., Simonyan, K., Vinyals, O., "
+    "Graves, A., Kalchbrenner, N., Senior, A., & Kavukcuoglu, K. (2016). "
+    "WaveNet: A generative model for raw audio. arXiv. "
+    "https://doi.org/10.48550/arXiv.1609.03499",
+    "https://doi.org/10.48550/arXiv.1609.03499",
+    "Establishes the causal dilated-convolution design lineage that informed later TCN architectures.",
+)
+
+
 ARIMA_CORE_REFERENCES = (
     YULE_1927,
     SLUTZKY_1937,
@@ -485,6 +708,139 @@ ARIMA_CORE_REFERENCES = (
 
 
 METHOD_INFORMATION: dict[str, MethodInformation] = {
+    "naive": MethodInformation(
+        origin=(
+            "The naive forecast is the forecasting form of a random walk: the latest "
+            "observation is the best point forecast for every future horizon. Pearson "
+            "(1905) introduced random-walk terminology, although no single publication "
+            "should be credited as the inventor of last-observation persistence. Modern "
+            "forecasting texts define it explicitly as an indispensable benchmark."
+        ),
+        how_it_works=(
+            "At forecast origin T, the rule is y-hat(T+h|T) = y(T) for every positive "
+            "horizon h. Historical one-step fitted values are therefore the immediately "
+            "preceding observations. The point forecast has no estimated trend, seasonal "
+            "state, or fitted coefficient and cannot change until a new value is observed."
+        ),
+        chrono_stream=(
+            "Chrono Stream fits the rule independently on the pre-holdout partition and "
+            "on the complete series, so the holdout cannot affect its benchmark forecast. "
+            "It reports the last training observation, uses direct persistence for all "
+            "horizons, and uses Gaussian random-walk intervals whose standard deviation "
+            "accumulates in proportion to the square root of the horizon."
+        ),
+        when_to_use=(
+            "Use it for level-like or random-walk series and as the minimum non-seasonal "
+            "standard against which every more elaborate method should be compared."
+        ),
+        limitations=(
+            "Persistence ignores systematic drift, seasonality, interventions, external "
+            "drivers, and mean reversion. A low error can still be unhelpful when the "
+            "decision requires anticipating turning points. Its intervals additionally assume "
+            "independent, constant-variance Gaussian first differences."
+        ),
+        citation_ready=(
+            "The naive forecast sets every future point forecast equal to the final "
+            "observed value and corresponds to the conditional mean or median forecast "
+            "of a random walk under suitable innovation assumptions (Hyndman & "
+            "Athanasopoulos, 2021). Pearson (1905) supplies the historical random-walk "
+            "term rather than this forecasting equation. Its main practical role is as a transparent "
+            "benchmark that more complex methods should outperform out of sample."
+        ),
+        references=(
+            PEARSON_1905,
+            HYNDMAN_ATHANASOPOULOS_2021,
+            HYNDMAN_KOEHLER_2006,
+        ),
+    ),
+    "seasonal_naive": MethodInformation(
+        origin=(
+            "Seasonal naive forecasting extends persistence to a repeating cycle: each "
+            "future phase inherits the most recent observation from that same phase. It "
+            "is a standard benchmark rather than a technique attributable to one unique "
+            "origin paper. Hyndman and Athanasopoulos (2021) give its modern equation, "
+            "while forecast-accuracy research formalizes its benchmark role."
+        ),
+        how_it_works=(
+            "For seasonal period m, the h-step forecast is the last available observation "
+            "whose index has the same phase modulo m. Forecasts beyond one cycle repeat "
+            "the same final observed seasonal cycle. Historical fitted values at time t "
+            "use y(t-m), so no centered or future observation enters the predictor."
+        ),
+        chrono_stream=(
+            "Chrono Stream requires an integer seasonal period of at least two and at "
+            "least two complete cycles. The evaluation fit uses only pre-holdout values, "
+            "the final fit repeats the last complete observed cycle, and the selected "
+            "period plus direct seasonal-persistence strategy are recorded in model details."
+        ),
+        when_to_use=(
+            "Use it as the essential comparator for regularly spaced series whose level "
+            "may vary by season but whose phase pattern is reasonably stable from cycle to cycle."
+        ),
+        limitations=(
+            "The method assumes an unchanged seasonal pattern and does not estimate trend, "
+            "calendar anomalies, multiple periods, evolving seasonal amplitude, or external "
+            "effects. An incorrect period gives systematically misaligned forecasts, and "
+            "residual-based intervals are only approximate rather than a calibrated seasonal model."
+        ),
+        citation_ready=(
+            "A seasonal naive forecast assigns each future observation the latest value "
+            "recorded in the same seasonal phase (Hyndman & Athanasopoulos, 2021). It is "
+            "therefore a causal seasonal-persistence benchmark. Naive and seasonal-naive "
+            "errors also underpin scaled accuracy measures designed for comparison across "
+            "series (Hyndman & Koehler, 2006)."
+        ),
+        references=(
+            HYNDMAN_ATHANASOPOULOS_2021,
+            HYNDMAN_KOEHLER_2006,
+            MAKRIDAKIS_HIBON_2000,
+        ),
+    ),
+    "drift": MethodInformation(
+        origin=(
+            "The drift method augments random-walk persistence with a constant mean change. "
+            "It belongs to the random-walk-with-drift family rather than deterministic "
+            "least-squares trend regression. Pearson (1905) supplies the random-walk lineage, "
+            "and Hyndman and Athanasopoulos (2021) state the familiar forecasting rule as "
+            "the average change between the first and latest observations."
+        ),
+        how_it_works=(
+            "For n observations, the estimated drift is [y(n)-y(1)]/(n-1), which is also "
+            "the arithmetic mean of all one-period changes because the differences telescope. "
+            "The h-step forecast adds h times this drift to y(n). It is a direct multi-step "
+            "rule: forecasts are not recursively re-estimated from earlier forecasts."
+        ),
+        chrono_stream=(
+            "Chrono Stream estimates drift separately inside the outer training partition "
+            "and after refitting on all observations. It records the first and last values, "
+            "the per-step drift, and its direct extrapolation strategy. Historical fitted "
+            "values are one-step random-walk-with-drift forecasts, and Gaussian intervals "
+            "accumulate innovation and drift-estimation uncertainty with the horizon."
+        ),
+        when_to_use=(
+            "Use it as a low-cost trend-sensitive baseline when a roughly constant average "
+            "change is plausible and a naive flat forecast is too restrictive."
+        ),
+        limitations=(
+            "Only the endpoints determine the estimated average change, so an unusual first "
+            "or last observation can strongly alter every forecast. Drift ignores seasonality, "
+            "curvature, structural breaks, mean reversion, and external causes; long-horizon "
+            "linear extrapolation can become implausible even when short-horizon error is competitive."
+        ),
+        citation_ready=(
+            "The drift method forecasts from a random walk with a constant mean increment: "
+            "the latest observation is advanced by the horizon times the average historical "
+            "change between the first and last observations (Hyndman & Athanasopoulos, "
+            "2021). Pearson (1905) supplies random-walk lineage, not the drift forecast rule. "
+            "It is a direct benchmark and should not be confused with "
+            "a least-squares line fitted to all levels."
+        ),
+        references=(
+            PEARSON_1905,
+            HYNDMAN_ATHANASOPOULOS_2021,
+            MAKRIDAKIS_HIBON_2000,
+        ),
+    ),
     "moving_average": MethodInformation(
         origin=(
             "Moving averages were used before modern forecast theory. The earliest "
@@ -579,8 +935,9 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
             "declining weights. Every future point forecast equals the final estimated level."
         ),
         chrono_stream=(
-            "Chrono Stream fits statsmodels SimpleExpSmoothing with an estimated initial "
-            "level. Alpha can be optimized from the training data or supplied manually."
+            "Chrono Stream fits statsmodels SimpleExpSmoothing. Automatic mode jointly "
+            "estimates alpha and the initial level; manual-alpha mode uses statsmodels' "
+            "heuristic initial level rather than optimizing that state."
         ),
         when_to_use=(
             "Use it for a series with a locally changing level but no sustained trend and "
@@ -595,7 +952,7 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
             "Simple exponential smoothing recursively updates a latent level by combining "
             "the newest observation with the previous level estimate, which is equivalent "
             "to assigning geometrically declining weights to older observations. Brown "
-            "(1956) introduced the approach for demand forecasting, Holt (1957/2004) "
+            "(1956) gave an early widely documented demand-forecasting treatment, Holt (1957/2004) "
             "developed the forecasting equations systematically, and Muth (1960) showed "
             "that the exponentially weighted forecast is optimal for a random walk observed with noise."
         ),
@@ -614,9 +971,10 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
             "effect gradually decreases."
         ),
         chrono_stream=(
-            "The app fits additive-trend statsmodels ExponentialSmoothing with estimated "
-            "initial states. Alpha and beta can be optimized or manual; damping is "
-            "optional, with phi optimized automatically or supplied in manual mode."
+            "The app fits additive-trend statsmodels ExponentialSmoothing. Automatic mode "
+            "jointly estimates smoothing parameters and initial states; manual alpha/beta "
+            "uses statsmodels' heuristic initial states. Damping is optional, with phi "
+            "optimized automatically or supplied in manual mode."
         ),
         when_to_use=(
             "Use it when a nonseasonal series has a changing level and an approximately "
@@ -633,7 +991,7 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
             "which can improve long-range robustness when a recent trend is unlikely to "
             "continue indefinitely (Gardner & McKenzie, 1985)."
         ),
-        references=(HOLT_1957, GARDNER_MCKENZIE_1985, WINTERS_1960),
+        references=(HOLT_1957, GARDNER_MCKENZIE_1985),
     ),
     "triple_exponential_smoothing": MethodInformation(
         origin=(
@@ -649,8 +1007,9 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
         ),
         chrono_stream=(
             "The app supports additive or multiplicative trend and seasonality, optional "
-            "trend damping, estimated initial states, and automatic or manual alpha, beta, "
-            "and gamma. It requires at least two complete cycles; multiplicative components "
+            "trend damping, and automatic or manual alpha, beta, and gamma. Automatic mode "
+            "jointly estimates smoothing parameters and initial states; manual mode uses "
+            "statsmodels' heuristic initial states. It requires at least two complete cycles; multiplicative components "
             "require strictly positive values."
         ),
         when_to_use=(
@@ -798,7 +1157,7 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
             CANOVA_HANSEN_1995,
         ),
     ),
-    "x11": MethodInformation(
+    "stl": MethodInformation(
         origin=(
             "Official X-11 is the Census Method II seasonal-adjustment program documented "
             "by Shiskin, Young, and Musgrave (1967), based on iterative moving-average "
@@ -815,7 +1174,7 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
         chrono_stream=(
             "This page executes robust statsmodels STL—not Census X-11. Chrono Stream fits "
             "trend plus seasonal as in-sample values, extrapolates a straight line from the "
-            "last max(2m, 8) trend observations, averages the historical STL seasonal "
+            "last min(n, max(2m, 8)) trend observations, averages the historical STL seasonal "
             "component by cycle phase, and recombines them. The method is therefore labeled "
             "'STL Decomposition Forecast (X-11-inspired)'."
         ),
@@ -841,6 +1200,47 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
             "as an STL decomposition forecast inspired by X-11 and is not an implementation of Census X-11."
         ),
         references=(SHISKIN_1967, CLEVELAND_TIAO_1976, CLEVELAND_STL_1990),
+    ),
+    "mstl_ets": MethodInformation(
+        origin=(
+            "Bandara, Hyndman, and Bergmeir (2025) introduced Multiple Seasonal-Trend "
+            "decomposition using Loess (MSTL) to extend STL to series containing more than "
+            "one seasonal pattern. The downstream ETS family follows the innovation "
+            "state-space taxonomy of Hyndman et al. (2002)."
+        ),
+        how_it_works=(
+            "MSTL iteratively applies STL smoothers so that each requested period receives "
+            "its own seasonal component while a shared trend and remainder are estimated. "
+            "Decomposition does not itself define a future forecast, so the adjusted series "
+            "and every seasonal component require explicit extrapolation rules."
+        ),
+        chrono_stream=(
+            "Chrono Stream subtracts all statsmodels MSTL seasonal components, fits a "
+            "nonseasonal additive-error ETS model to the adjusted series, and selects no, "
+            "additive, or damped-additive trend by AICc/AIC/BIC unless manually fixed. Each "
+            "final decomposed seasonal cycle is repeated and added back. Reported intervals "
+            "condition on those repeated seasonal paths and include ETS uncertainty only."
+        ),
+        when_to_use=(
+            "Use it when regularly spaced data contain at least two credible and repeatedly "
+            "observed seasonal periods, such as hourly data with daily and weekly cycles, "
+            "and an additive decomposition is substantively reasonable."
+        ),
+        limitations=(
+            "Periods are supplied rather than discovered, long cycles are data hungry, and "
+            "repeating the terminal decomposed cycles assumes their shape remains stable. "
+            "The ETS recombination rule is a transparent Chrono Stream forecasting choice, "
+            "not a forecasting algorithm prescribed by the MSTL paper. Decomposition and "
+            "period-estimation uncertainty are excluded from the conditional intervals."
+        ),
+        citation_ready=(
+            "MSTL iteratively estimates multiple seasonal components through repeated STL "
+            "decompositions (Bandara et al., 2025). Because MSTL is a decomposition rather "
+            "than a complete forecast rule, Chrono Stream forecasts the seasonally adjusted "
+            "series with nonseasonal additive-error ETS (Hyndman et al., 2002), repeats each "
+            "last seasonal cycle, and adds the components."
+        ),
+        references=(MSTL_2025, CLEVELAND_STL_1990, HYNDMAN_ET_AL_2002),
     ),
     "prophet": MethodInformation(
         origin=(
@@ -978,6 +1378,91 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
         ),
         references=(FUKUSHIMA_1980, LECUN_1989, LECUN_1998, BOROVYKH_2017),
     ),
+    "nbeats": MethodInformation(
+        origin=(
+            "Oreshkin, Carpov, Chapados, and Bengio (2020) introduced N-BEATS as a "
+            "deep fully connected forecasting architecture based on basis-expansion blocks "
+            "and backward and forward residual links. Their paper distinguishes a generic "
+            "learned-basis form from constrained interpretable trend and seasonality stacks."
+        ),
+        how_it_works=(
+            "Each block maps a fixed historical backcast window through dense nonlinear "
+            "layers to a backcast vector and a multi-step forecast vector. The backcast is "
+            "subtracted from the block input, later blocks explain the residual, and all "
+            "block forecast vectors are added to produce the complete requested horizon."
+        ),
+        chrono_stream=(
+            "Chrono Stream standardizes only the current fitting partition and trains a "
+            "compact generic N-BEATS with learned backcast and forecast heads, Adam/MSE, "
+            "ordered windows, and seed 42. It predicts the requested horizon directly, a "
+            "multi-step strategy reviewed by Ben Taieb et al. (2012). This "
+            "is neither the paper's constrained trend/seasonality-stack variant nor its large "
+            "global ensemble, and its displayed residual intervals are approximate."
+        ),
+        when_to_use=(
+            "Use it experimentally when ample history supports a nonlinear direct-horizon "
+            "model and fixed-window patterns may not be summarized well by a small classical "
+            "model. Compare it with naive, ETS, and simpler neural baselines on the holdout."
+        ),
+        limitations=(
+            "Direct training loses complete examples as lookback or horizon grows, neural "
+            "optimization is stochastic and compute intensive, and a local univariate fit "
+            "cannot inherit the scale and diversity advantages of the paper's cross-series "
+            "experiments. Learned generic bases are not automatically interpretable, while "
+            "residual bands do not represent neural parameter or model uncertainty."
+        ),
+        citation_ready=(
+            "N-BEATS uses fully connected basis-expansion blocks with doubly residual "
+            "connections: each block removes a backcast from its input and contributes an "
+            "additive multi-horizon forecast (Oreshkin et al., 2020). Chrono Stream implements "
+            "the generic learned-basis form as one compact local model; it does not reproduce "
+            "the paper's interpretable constrained stacks or forecasting ensemble."
+        ),
+        references=(ORESHKIN_ET_AL_2020, BEN_TAIEB_2012),
+    ),
+    "tcn": MethodInformation(
+        origin=(
+            "Bai, Kolter, and Koltun (2018) evaluated a generic Temporal Convolutional "
+            "Network built from causal dilated convolutions and residual blocks against "
+            "recurrent sequence models. Its causal dilation lineage includes WaveNet, which "
+            "van den Oord et al. (2016) introduced for autoregressive audio generation; "
+            "Borovykh et al. (2017) applied convolutional architectures to conditional "
+            "time-series forecasting."
+        ),
+        how_it_works=(
+            "A causal convolution uses only the current and earlier positions. Exponentially "
+            "increasing dilation spaces kernel taps farther apart, expanding the receptive "
+            "field without a recurrent state, while residual shortcuts support optimization "
+            "through stacked convolutional blocks."
+        ),
+        chrono_stream=(
+            "Chrono Stream standardizes the current fitting partition, constructs past-only "
+            "univariate windows, and trains residual blocks containing two causal Conv1D "
+            "layers at dilations 1, 2, 4, and onward. The final causal state predicts one next "
+            "value, which is fed back recursively. Seed 42 and ordered batches improve "
+            "repeatability; intervals remain residual approximations."
+        ),
+        when_to_use=(
+            "Use it experimentally when dependencies may span several lag scales and enough "
+            "ordered examples exist to learn convolutional filters. It is especially useful "
+            "as a causal-dilation comparator to a plain CNN or recurrent LSTM."
+        ),
+        limitations=(
+            "A theoretical receptive field larger than the supplied lookback sees causal zero "
+            "padding rather than older observations. Recursive output compounds errors, the "
+            "small local network is not the benchmark suite or exact architecture of Bai et "
+            "al., and it is not WaveNet's probabilistic audio model. Hyperparameters are not "
+            "automatically tuned and residual bands are not calibrated neural uncertainty."
+        ),
+        citation_ready=(
+            "A generic TCN combines causal convolutions, exponentially increasing dilations, "
+            "and residual connections to process sequences without recurrent state (Bai et "
+            "al., 2018), drawing on the causal dilated-convolution lineage of WaveNet (van den "
+            "Oord et al., 2016). Chrono Stream fits a compact past-only version and generates "
+            "multi-step forecasts recursively, rather than reproducing either cited system exactly."
+        ),
+        references=(BAI_ET_AL_2018, VAN_DEN_OORD_ET_AL_2016, BOROVYKH_2017),
+    ),
     "xgboost": MethodInformation(
         origin=(
             "Friedman (2001) developed gradient boosting as stagewise optimization in "
@@ -1019,6 +1504,440 @@ METHOD_INFORMATION: dict[str, MethodInformation] = {
             "examined by Ben Taieb et al. (2012)."
         ),
         references=(FRIEDMAN_2001, CHEN_GUESTRIN_2016, BEN_TAIEB_2012),
+    ),
+    "lagged_linear": MethodInformation(
+        origin=(
+            "Lagged linear forecasting joins ordinary least squares with autoregressive "
+            "prediction. Yule (1927) established the autoregressive idea of explaining a "
+            "series from its own past, while least-squares estimation has a much earlier "
+            "lineage in Legendre (1805). The implementation is supervised regression on "
+            "causal time-indexed rows rather than a full stochastic AR error model."
+        ),
+        how_it_works=(
+            "Each target y_t is paired with y_(t-1) through y_(t-p), optionally augmented "
+            "by shifted rolling summaries, a longer seasonal lag, and sine/cosine calendar "
+            "values known for time t. OLS minimizes squared one-step residuals. Multi-step "
+            "forecasts recursively append each prediction before constructing the next row."
+        ),
+        chrono_stream=(
+            "Chrono Stream rejects irregular dates, creates every rolling statistic from "
+            "values strictly before its target, and confines automatic lag selection to "
+            "expanding-window folds inside the current training partition. The chosen lags, "
+            "feature names, coefficients, fold scores, and recursive strategy are recorded; "
+            "displayed intervals are explicitly residual approximations."
+        ),
+        when_to_use=(
+            "Use it as an interpretable autoregressive benchmark when dependence is broadly "
+            "linear and lag coefficients or known calendar cycles are substantively useful."
+        ),
+        limitations=(
+            "Adjacent lags are often highly correlated, making individual OLS coefficients "
+            "unstable even when predictions are adequate. The equation does not automatically "
+            "difference nonstationary data, model innovation autocorrelation, or protect against "
+            "breaks; recursive errors compound and residual intervals are not model-native."
+        ),
+        citation_ready=(
+            "Lagged linear regression represents the next observation as a least-squares "
+            "function of earlier observations, connecting autoregression (Yule, 1927) with "
+            "causal supervised forecasting. Chrono Stream chooses lags by expanding-window "
+            "validation (Tashman, 2000) and generates multiple horizons recursively, whose "
+            "error-propagation tradeoff is documented by Ben Taieb et al. (2012)."
+        ),
+        references=(YULE_1927, LEGENDRE_1805, TASHMAN_2000, BEN_TAIEB_2012),
+    ),
+    "regularized_regression": MethodInformation(
+        origin=(
+            "Regularized lag regression applies penalized linear estimation to correlated "
+            "time-lag predictors. Hoerl and Kennard (1970) introduced ridge regression, "
+            "Tibshirani (1996) introduced the Lasso, and Zou and Hastie (2005) combined L1 "
+            "and L2 penalties in Elastic Net. These are related estimators exposed as one "
+            "conceptual method with an explicit penalty selector."
+        ),
+        how_it_works=(
+            "Ridge shrinks squared coefficient magnitude, Lasso penalizes absolute magnitude "
+            "and can set coefficients to zero, and Elastic Net combines both penalties. The "
+            "lag matrix is standardized so penalties compare predictors on a common scale. "
+            "Alpha controls total shrinkage; Elastic Net's L1 ratio controls the mixture."
+        ),
+        chrono_stream=(
+            "Chrono Stream wraps StandardScaler and the selected estimator in one pipeline, "
+            "so scaling is refitted separately within every expanding training fold and again "
+            "on the complete fit partition. Automatic mode searches a bounded alpha grid and "
+            "Elastic Net ratios; manual mode preserves user values. Forecasting remains recursive "
+            "and all standardized coefficients and candidate scores are reported."
+        ),
+        when_to_use=(
+            "Use it when many overlapping lags make OLS unstable, when shrinkage may improve "
+            "out-of-sample prediction, or when sparse lag selection is desirable."
+        ),
+        limitations=(
+            "A selected zero coefficient is not proof that a lag has no effect, especially "
+            "when predictors are correlated. Results depend on scaling, alpha, L1 ratio, fold "
+            "origins, and structural stability. The method still assumes one global linear "
+            "response and its residual interval does not incorporate tuning uncertainty."
+        ),
+        citation_ready=(
+            "Regularized lag regression stabilizes a linear autoregression by penalizing its "
+            "coefficients: ridge uses L2 shrinkage (Hoerl & Kennard, 1970), Lasso uses L1 "
+            "shrinkage and selection (Tibshirani, 1996), and Elastic Net combines the two to "
+            "encourage grouped behavior among correlated predictors (Zou & Hastie, 2005)."
+        ),
+        references=(HOERL_KENNARD_1970, TIBSHIRANI_1996, ZOU_HASTIE_2005, TASHMAN_2000),
+    ),
+    "cart": MethodInformation(
+        origin=(
+            "Breiman, Friedman, Olshen, and Stone (1984) systematized Classification and "
+            "Regression Trees (CART), including binary recursive partitioning for continuous "
+            "responses and complexity control. CART and decision-tree regression are therefore "
+            "not separate forecast methods here: one page applies the regression-tree method "
+            "to lag-derived time-series examples."
+        ),
+        how_it_works=(
+            "A regression tree repeatedly chooses a feature and threshold that reduce squared "
+            "error in child nodes. A terminal leaf predicts the average training target within "
+            "its partition. Maximum depth and minimum leaf size control the bias–variance tradeoff, "
+            "while past-only lags translate temporal history into predictors the tree can consume."
+        ),
+        chrono_stream=(
+            "Chrono Stream fits one seeded sklearn DecisionTreeRegressor. Automatic mode chooses "
+            "depth and leaf size by bounded expanding-window validation; manual mode exposes both. "
+            "It reports realized depth, leaves, impurity importances, causal features, and the "
+            "recursive strategy. The residual bands are approximations, not ordinary CART 95% intervals."
+        ),
+        when_to_use=(
+            "Use CART when a compact set of nonlinear thresholds or interactions is plausible "
+            "and the resulting tree structure is more valuable than a smooth equation."
+        ),
+        limitations=(
+            "One tree is unstable to modest data changes, leaf predictions are piecewise constant, "
+            "and extrapolation beyond learned target regions is weak. Impurity importance is descriptive "
+            "rather than inferential, recursive errors accumulate, and small time series offer few "
+            "independent regimes from which to learn reliable splits."
+        ),
+        citation_ready=(
+            "CART recursively partitions predictor space and assigns a constant response estimate "
+            "within each terminal region (Breiman et al., 1984). Chrono Stream uses lagged causal "
+            "rows, tunes complexity with ordered forecast-origin folds (Tashman, 2000), and warns "
+            "that recursive multi-step use can propagate early prediction errors."
+        ),
+        references=(BREIMAN_ET_AL_1984, TASHMAN_2000, BEN_TAIEB_2012),
+    ),
+    "random_forest": MethodInformation(
+        origin=(
+            "Breiman (2001) defined Random Forests as ensembles of randomized tree predictors. "
+            "They extend the CART regression-tree foundation of Breiman et al. (1984) by combining "
+            "bootstrap resampling with random feature subsets, reducing the dependence among trees "
+            "so their average can be more stable than a single tree."
+        ),
+        how_it_works=(
+            "Each regression tree is trained on a bootstrap sample and considers a random subset "
+            "of features at a split. The forest prediction averages terminal-leaf predictions across "
+            "trees. Tree count controls Monte Carlo stability; depth, leaf size, and feature fraction "
+            "control complexity and diversity. Time enters only through constructed lag/calendar rows."
+        ),
+        chrono_stream=(
+            "Chrono Stream uses a fixed seed and one worker for reproducible sklearn forests. Automatic "
+            "mode performs a bounded expanding-window search over depth, leaf size, and feature fraction "
+            "with 100 trees; manual mode exposes these plus tree count. It logs feature importances, "
+            "bootstrap use, candidate errors, and recursive forecasting. Intervals remain residual approximations."
+        ),
+        when_to_use=(
+            "Use it for nonlinear lag interactions when sufficient supervised rows exist and a more "
+            "stable ensemble is preferred to one highly variable decision tree."
+        ),
+        limitations=(
+            "A forest is less transparent than one tree and still predicts by averaging learned leaf "
+            "targets, so it generally cannot extend a new linear trend beyond observed response regions. "
+            "Impurity importance can be biased, temporal regimes can change, recursive inputs drift from "
+            "training states, and the app does not claim native or calibrated forest intervals."
+        ),
+        citation_ready=(
+            "Random Forest regression averages many CART-style predictors built with bootstrap samples "
+            "and randomized feature selection, trading one tree's instability for ensemble diversity "
+            "(Breiman, 2001; Breiman et al., 1984). Chrono Stream applies this learner to past-only lag "
+            "states and selects bounded complexity using expanding forecast origins (Tashman, 2000)."
+        ),
+        references=(BREIMAN_2001, BREIMAN_ET_AL_1984, TASHMAN_2000),
+    ),
+    "support_vector_regression": MethodInformation(
+        origin=(
+            "Vapnik (1995) established the support-vector function-estimation framework, and "
+            "Vapnik, Golowich, and Smola (1997) presented it for regression estimation. "
+            "Drucker et al. (1997) supplied an early regression application and comparison, while "
+            "Smola and Schölkopf (2004) later consolidated its optimization, kernel, sparsity, "
+            "and regularization interpretation. Chrono Stream applies epsilon-SVR to "
+            "lag-derived states rather than claiming a specialized stochastic time-series likelihood."
+        ),
+        how_it_works=(
+            "Epsilon-insensitive loss ignores errors inside a tube of width epsilon and penalizes deviations "
+            "outside it, while C balances flatness against violations. A linear kernel estimates a regularized "
+            "linear surface; the radial-basis kernel represents smooth nonlinear similarity. Only support vectors "
+            "with active constraints determine the fitted function."
+        ),
+        chrono_stream=(
+            "Chrono Stream standardizes both causal features and the target inside a leakage-safe "
+            "transformed-target pipeline, then inverse-transforms predictions. Automatic mode "
+            "searches bounded linear/RBF, C, epsilon, and gamma settings with expanding folds; manual mode exposes "
+            "the principal controls, with C and epsilon interpreted on the standardized target scale. "
+            "The selected support-vector count and every candidate score are recorded. "
+            "Multi-step forecasts recurse and uncertainty bands are residual approximations."
+        ),
+        when_to_use=(
+            "Use SVR when a smooth nonlinear relationship among a moderate number of lag features is plausible "
+            "and the dataset is large enough to tune regularization without an excessive search."
+        ),
+        limitations=(
+            "SVR is sensitive to scale and tuning, RBF behavior is difficult to explain, and fitting cost grows "
+            "quickly with sample size. Kernel regression does not guarantee trend extrapolation, recursive inputs "
+            "may move away from observed states, and epsilon-insensitive fitting supplies no native predictive "
+            "distribution for the app's displayed interval."
+        ),
+        citation_ready=(
+            "Support Vector Regression estimates a regularized function under epsilon-insensitive loss, using "
+            "kernels to represent nonlinear relations when required (Vapnik, 1995; Vapnik et al., 1997). "
+            "Drucker et al. (1997) provided an early application, and Smola and Schölkopf (2004) a later tutorial. "
+            "Chrono Stream standardizes only within training folds and tunes candidates with ordered "
+            "expanding validation rather than shuffled cross-validation (Tashman, 2000)."
+        ),
+        references=(
+            VAPNIK_1995,
+            VAPNIK_GOLOWICH_SMOLA_1997,
+            DRUCKER_ET_AL_1997,
+            SMOLA_SCHOLKOPF_2004,
+            TASHMAN_2000,
+        ),
+    ),
+    "knn_regression": MethodInformation(
+        origin=(
+            "Nearest-neighbor regression belongs to nonparametric conditional-mean estimation. Stone (1977) "
+            "established broad consistency results including nearest-neighbor weight rules, and Altman (1992) "
+            "provided a clear treatment of kernel and nearest-neighbor regression. The forecasting adaptation "
+            "treats each lag window as a state whose historical successors are candidate outcomes."
+        ),
+        how_it_works=(
+            "After standardization, the method finds k training rows closest to the current lag/calendar vector "
+            "under Manhattan or Euclidean distance. It predicts the uniform or inverse-distance average of their "
+            "targets. Small k is locally adaptive but variable; large k is smoother but can average distinct regimes."
+        ),
+        chrono_stream=(
+            "Chrono Stream fits StandardScaler only inside each training pipeline, limits automatic k values to the "
+            "smallest expanding fold, and searches neighbor count, weighting, and distance power without shuffling. "
+            "Manual settings are also available. Future lag states contain earlier predictions, the chosen distance "
+            "contract is reported, and intervals are residual approximations."
+        ),
+        when_to_use=(
+            "Use it when historically similar lag patterns recur and a local analog forecast is easier to justify "
+            "than one global parametric response function."
+        ),
+        limitations=(
+            "Distance becomes less informative as feature dimension grows, duplicate or sparse states can dominate, "
+            "and scaling choices materially change neighbors. kNN averages observed target values rather than "
+            "extrapolating new levels; recursive forecasts can enter regions without good analogs, and consistency "
+            "theory does not guarantee accuracy for a short dependent series."
+        ),
+        citation_ready=(
+            "k-nearest-neighbor regression estimates a response from the targets attached to nearby predictor states, "
+            "with locality controlled by k and optional distance weights (Stone, 1977; Altman, 1992). Chrono Stream "
+            "uses standardized, past-only lag states and expanding-window tuning (Tashman, 2000), then recursively "
+            "queries predicted future states."
+        ),
+        references=(STONE_1977, ALTMAN_1992, TASHMAN_2000),
+    ),
+    "extra_trees": MethodInformation(
+        origin=(
+            "Geurts, Ernst, and Wehenkel (2006) introduced Extremely Randomized Trees, increasing ensemble diversity "
+            "by randomizing split thresholds as well as candidate attributes. The method shares regression-tree roots "
+            "with CART and ensemble motivation with Random Forests, but it is not simply a renamed Random Forest."
+        ),
+        how_it_works=(
+            "Many regression trees are grown from the full training sample by default. At each node, random candidate "
+            "features and random cut points are proposed, and the best proposal under the split criterion is used. "
+            "Averaging the trees reduces variance introduced by this strong randomization and yields piecewise-constant "
+            "predictions over lag-feature space."
+        ),
+        chrono_stream=(
+            "Chrono Stream uses sklearn ExtraTreesRegressor without bootstrap sampling, a fixed seed, and one worker. "
+            "Automatic expanding-window validation tunes depth, leaf size, and feature fraction with a bounded 100-tree "
+            "search; manual mode exposes those controls and tree count. It reports threshold-randomization semantics, "
+            "feature importances, candidate scores, and recursive forecasts."
+        ),
+        when_to_use=(
+            "Use Extra Trees as a fast, strongly randomized nonlinear comparator when a Random Forest may retain too "
+            "much split correlation and enough lag rows exist for ensemble learning."
+        ),
+        limitations=(
+            "Additional randomization can increase bias, leaf averages remain poor extrapolators, and ensemble feature "
+            "importance is not a significance test. Results still depend on lag construction and regimes represented "
+            "in the sample. Recursive errors compound, while the residual interval does not measure variation across "
+            "trees or provide calibrated coverage."
+        ),
+        citation_ready=(
+            "Extra Trees strongly randomizes both feature and cut-point selection before averaging regression trees "
+            "(Geurts et al., 2006), distinguishing it from Breiman's bootstrap-oriented Random Forest formulation "
+            "(Breiman, 2001). Chrono Stream fits it to causal lag rows and tunes only inside expanding training folds."
+        ),
+        references=(GEURTS_ET_AL_2006, BREIMAN_2001, TASHMAN_2000),
+    ),
+    "theta": MethodInformation(
+        origin=(
+            "Assimakopoulos and Nikolopoulos (2000) introduced the Theta model and its combination of transformed "
+            "curvature lines, which performed strongly in the M3 competition. Hyndman and Billah (2003) subsequently "
+            "showed that the conventional forecast has a much simpler representation closely related to simple "
+            "exponential smoothing with drift."
+        ),
+        how_it_works=(
+            "The classical theta-two forecast combines a long-run slope contribution with a simple-exponential-smoothing "
+            "level. The general theta coefficient changes the trend weight. Optional classical seasonal decomposition "
+            "is applied before fitting and reversed afterward; estimation can use two-step OLS plus SES or the equivalent "
+            "ARIMA(0,1,1)-with-drift maximum likelihood form."
+        ),
+        chrono_stream=(
+            "Chrono Stream uses statsmodels ThetaModel, supports automatic seasonality testing, forced or disabled "
+            "seasonal adjustment, additive/multiplicative/automatic decomposition, theta, and two-step or MLE estimation. "
+            "Historical fitted values are expanding-prefix one-step forecasts wherever a prefix has enough history; "
+            "at the exact two-cycle seasonal minimum none are available. The integrated-MA Gaussian interval variance "
+            "is estimated from the same deseasonalized series used for fitting rather than the raw seasonal series."
+        ),
+        when_to_use=(
+            "Use Theta as a parsimonious general-purpose benchmark for level-and-drift series, especially when more "
+            "complex models need a strong lightweight comparator."
+        ),
+        limitations=(
+            "Seasonal decomposition requires a defensible period and at least two cycles, structural breaks can invalidate "
+            "the drift, and one smoothed level cannot represent rich dynamics. The conventional success of theta=2 does "
+            "not make it universally optimal. Native intervals rely on Gaussian and integrated-MA assumptions, and forced "
+            "multiplicative adjustment requires positive observations."
+        ),
+        citation_ready=(
+            "The Theta method combines extrapolations of series whose curvature is transformed while mean and slope are "
+            "preserved (Assimakopoulos & Nikolopoulos, 2000). Its conventional two-line forecast is algebraically "
+            "equivalent to a simple-exponential-smoothing forecast with drift (Hyndman & Billah, 2003), which is the "
+            "computational interpretation used by statsmodels and Chrono Stream. Theta values other than the conventional "
+            "two belong to the later generalized/optimized family (Fiorucci et al., 2016)."
+        ),
+        references=(
+            ASSIMAKOPOULOS_NIKOLOPOULOS_2000,
+            HYNDMAN_BILLAH_2003,
+            FIORUCCI_ET_AL_2016,
+            MAKRIDAKIS_HIBON_2000,
+        ),
+    ),
+    "automatic_ets": MethodInformation(
+        origin=(
+            "Hyndman, Koehler, Snyder, and Grose (2002) organized exponential smoothing as an innovation state-space "
+            "taxonomy indexed by Error, Trend, and Seasonality—ETS—and showed how likelihood and information criteria "
+            "enable automatic forecasting. Hyndman et al. (2008) developed the framework, estimation, admissibility, "
+            "simulation, and intervals comprehensively."
+        ),
+        how_it_works=(
+            "An ETS structure specifies additive or multiplicative observation errors, absent/additive/multiplicative "
+            "trend, optional damping, and absent/additive/multiplicative seasonality. Each candidate is fitted by maximum "
+            "likelihood with estimated states. Automatic selection minimizes AICc, AIC, or BIC among converged finite "
+            "candidates fitted to the same partition."
+        ),
+        chrono_stream=(
+            "Chrono Stream searches a bounded, disclosed statsmodels ETS grid. Multiplicative candidates are omitted for "
+            "nonpositive data, seasonal candidates require two cycles, and every attempted success or failure is retained. "
+            "Manual mode selects an exact structure. The winning error/trend/damping/seasonal tuple, parameters, criteria, "
+            "convergence, fitted states, and native state-space intervals are saved."
+        ),
+        when_to_use=(
+            "Use Automatic ETS when evolving level, trend, or one stable seasonal cycle is plausible but the appropriate "
+            "additive/multiplicative structure is not known in advance."
+        ),
+        limitations=(
+            "Information criteria rank fitted candidates but do not prove adequacy or future accuracy. Multiplicative "
+            "forms require positive data, seasonal estimation needs repeated cycles, and one ETS seasonal period cannot "
+            "represent complex multiple calendars. A large candidate family adds selection uncertainty, while optimizer "
+            "convergence and structural stability remain separate concerns."
+        ),
+        citation_ready=(
+            "Automatic ETS treats exponential smoothing methods as innovation state-space models indexed by error, trend, "
+            "and seasonal components, permitting likelihood-based selection and predictive intervals (Hyndman et al., "
+            "2002, 2008). Chrono Stream ranks only converged candidates by the selected information criterion and preserves "
+            "the full attempted-candidate record."
+        ),
+        references=(HYNDMAN_ET_AL_2002, HYNDMAN_ET_AL_2008, HOLT_1957, WINTERS_1960),
+    ),
+    "tbats": MethodInformation(
+        origin=(
+            "De Livera, Hyndman, and Snyder (2011) introduced the framework now called TBATS for complex seasonality. "
+            "Its acronym summarizes Trigonometric seasonality, Box–Cox transformation, ARMA errors, Trend, and Seasonal "
+            "components. It extends innovation state-space smoothing to periods that are multiple, long, high-frequency, "
+            "or non-integer."
+        ),
+        how_it_works=(
+            "Seasonal cycles are represented with trigonometric harmonics whose states evolve over time, avoiding one "
+            "separate state for every position of a long period. A Box–Cox transform can stabilize positive-scale variance, "
+            "a local trend may be damped, and ARMA terms can capture remaining short-run errors. Candidate component "
+            "configurations are evaluated by AIC in the installed implementation."
+        ),
+        chrono_stream=(
+            "Chrono Stream uses the pinned tbats package lazily, fixes one worker, accepts comma-separated floating-point "
+            "periods, and requires two repetitions of the longest period. Automatic mode searches Box–Cox when positivity "
+            "allows it plus trend and damping, with optional ARMA errors; manual mode fixes switches. Selected harmonics, "
+            "lambda, damping, ARMA orders, AIC, warnings, and native Gaussian intervals are reported."
+        ),
+        when_to_use=(
+            "Use TBATS when a regularly spaced series has credible multiple or non-integer seasonal cycles that simpler "
+            "Holt–Winters or one-period ETS cannot represent."
+        ),
+        limitations=(
+            "TBATS can be computationally costly and data hungry, especially with long periods and ARMA search. User-supplied "
+            "periods remain substantive assumptions, Box–Cox requires positivity, and evolving events or structural breaks "
+            "are not explained merely by Fourier flexibility. Gaussian intervals and AIC comparisons inherit distributional "
+            "and candidate-set assumptions."
+        ),
+        citation_ready=(
+            "TBATS embeds trigonometric multiple-seasonal states, optional Box–Cox transformation, damped trend, and ARMA "
+            "errors in an innovation state-space forecast (De Livera et al., 2011). Chrono Stream exposes those component "
+            "choices and uses native interval output; the Box–Cox option follows the transformation family of Box and Cox (1964)."
+        ),
+        references=(DE_LIVERA_ET_AL_2011, BOX_COX_1964, HYNDMAN_ET_AL_2008),
+    ),
+    "croston_family": MethodInformation(
+        origin=(
+            "Croston (1972) proposed separately smoothing positive demand sizes and the "
+            "intervals between them for intermittent demand. Syntetos and Boylan (2005) "
+            "analyzed the estimator's bias and supplied the approximation now called SBA. "
+            "Teunter, Syntetos, and Babai (2011) replaced interval smoothing with an "
+            "occurrence-probability update designed to react to obsolescence."
+        ),
+        how_it_works=(
+            "Croston and SBA update a demand-size state and an inter-demand-interval state "
+            "only when positive demand occurs, then divide size by interval; SBA multiplies "
+            "that ratio by 1-alpha/2. TSB smooths a binary occurrence indicator every period "
+            "and multiplies its probability state by the smoothed positive size."
+        ),
+        chrono_stream=(
+            "Exact zero means no demand and negative observations are rejected. The first "
+            "positive demand initializes size and its one-based location initializes timing. "
+            "Automatic mode evaluates bounded alpha—and beta for TSB—using causal one-step "
+            "MAE or RMSE on only the fitting partition, retaining zero periods. Every future "
+            "point is the terminal expected demand per period; intervals are clipped-at-zero "
+            "residual approximations rather than native inventory distributions."
+        ),
+        when_to_use=(
+            "Use the family for nonnegative, regularly spaced demand with many genuine "
+            "zero-demand periods. SBA is a bias-corrected Croston comparator; TSB is useful "
+            "when the probability of demand can decay, including possible obsolescence."
+        ),
+        limitations=(
+            "A zero caused by missing collection is not a no-demand event, so preprocessing "
+            "semantics are decisive. The methods forecast expected demand per period rather "
+            "than the timing or size of the next transaction. Constant terminal paths ignore "
+            "future covariates and changing positive sizes; automatic grid scores are not an "
+            "inventory cost optimization, and approximate intervals are not calibrated for "
+            "zero-inflated or discrete demand."
+        ),
+        citation_ready=(
+            "Croston's intermittent-demand method separately smooths nonzero demand size and "
+            "inter-demand timing (Croston, 1972). SBA applies the Syntetos–Boylan bias "
+            "correction (Syntetos & Boylan, 2005), whereas TSB smooths occurrence probability "
+            "each period so expected demand can decay after sustained zeros (Teunter et al., "
+            "2011). Chrono Stream exposes all three recursions with explicit zero semantics."
+        ),
+        references=(CROSTON_1972, SYNTETOS_BOYLAN_2005, TEUNTER_ET_AL_2011),
     ),
     "linear": MethodInformation(
         origin=(

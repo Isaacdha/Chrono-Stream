@@ -325,13 +325,13 @@ STATISTICAL_TESTS: dict[str, StatisticalTestInformation] = {
         purpose="Detect whether squared residuals are predictable from their own lags, indicating autoregressive conditional heteroskedasticity.",
         null_hypothesis="H0: All coefficients on the selected lags of squared residuals are zero; there is no ARCH effect through lag L.",
         alternative_hypothesis="H1: At least one lagged-squared-residual coefficient is nonzero, so conditional variance is time dependent.",
-        statistic="LM = effective_n * R^2 from an auxiliary regression of squared residuals on a constant and L lagged squared residuals. The auxiliary-regression F statistic tests the same joint restriction in an alternative finite-sample form.",
+        statistic="statsmodels computes LM = (n_aux - ddof) * R^2 from an auxiliary regression of squared residuals on a constant and L lagged squared residuals, where n_aux is the post-lag sample. The auxiliary-regression F statistic tests the same joint restriction in an alternative finite-sample form.",
         reference_distribution="LM is asymptotically chi-square with L degrees of freedom under H0; the auxiliary statistic uses an F distribution with regression restriction and residual degrees of freedom.",
         decision_rule="Reject H0 when the LM p-value < alpha (or LM exceeds chi-square critical); the F version rejects when its p-value < alpha. Chrono Stream's mandatory gate is based on LM p > alpha, while both LM and F results are reported.",
-        chrono_stream="The app calls statsmodels.het_arch with L=min(10,floor(n/5)), at least one, and ddof=p+q+P+Q. It now retains LM, LM p, auxiliary F, and F p. The gate uses the LM p-value and requires at least 12 usable standardized residuals.",
+        chrono_stream="The app calls statsmodels.het_arch with L=min(10,floor(n/5)), at least one, and ddof=p+q+P+Q. This ddof argument rescales LM as (n_aux-ddof)*R^2; it does not change the chi-square reference degrees of freedom, which remain L. The app retains LM, LM p, auxiliary F, and F p, and rejects the diagnostic as unavailable when n_aux<=ddof.",
         interpretation="Rejection means residual variance remains systematically predictable even if residual levels are uncorrelated. Failure to reject means no ARCH effect was detected through L, not proof of globally constant or correctly specified variance.",
-        assumptions_and_caveats="The LM calibration is asymptotic and sensitive to lag choice, outliers, mean-model misspecification, and residual serial correlation. The F and LM versions can disagree in small samples. Heteroskedasticity chiefly threatens Gaussian interval and likelihood assumptions; it does not automatically erase point-forecast usefulness.",
-        literature_review="Engle (1982) introduced ARCH models and the associated LM test by regressing squared disturbances on their lags. The insight separates mean whiteness from variance dynamics: a series can have negligible residual ACF but clusters of large and small errors. For ARIMA diagnostics this is complementary to Ljung–Box, not redundant. Chrono Stream uses the conventional auxiliary regression, adjusts degrees of freedom for fitted AR/MA terms, and reports both the asymptotic chi-square LM result and the auxiliary F result while basing its optional gate on LM.",
+        assumptions_and_caveats="The LM calibration is asymptotic and sensitive to lag choice, outliers, mean-model misspecification, residual serial correlation, and the optional statistic rescaling for fitted parameters. The F and LM versions can disagree in small samples. Heteroskedasticity chiefly threatens Gaussian interval and likelihood assumptions; it does not automatically erase point-forecast usefulness.",
+        literature_review="Engle (1982) introduced ARCH models and the associated LM test by regressing squared disturbances on their lags. The insight separates mean whiteness from variance dynamics: a series can have negligible residual ACF but clusters of large and small errors. For ARIMA diagnostics this is complementary to Ljung–Box, not redundant. Chrono Stream reports both the asymptotic chi-square LM result and the auxiliary F result. Its statsmodels ddof setting reduces the multiplier applied to R-squared for fitted AR/MA terms while retaining L chi-square degrees of freedom; the optional gate is based on that LM p-value.",
         references=(ENGLE_1982, BOX_JENKINS_1970),
     ),
     "acf_lag": StatisticalTestInformation(
@@ -342,8 +342,8 @@ STATISTICAL_TESTS: dict[str, StatisticalTestInformation] = {
         alternative_hypothesis="H1: At lag k, rho_k is nonzero (two-sided).",
         statistic="Approximate z_k = sqrt(n) * r_k.",
         reference_distribution="For white noise and fixed k, z_k is approximately standard normal, yielding a pointwise 95% band of about +/-1.96/sqrt(n). General stationary-process ACF variances follow Bartlett-type formulas instead.",
-        decision_rule="At the app's fixed 95% identification level (alpha=.05), flag lag k when |r_k| > 1.96/sqrt(n). This is equivalent to an approximate two-sided p<.05 pointwise rule, not a simultaneous confidence band.",
-        chrono_stream="The transformed/differenced series and fitted residuals are analyzed with statsmodels ACF. Chrono Stream records the fixed +/-1.96/sqrt(n) bounds and uses significant low lags to seed q and significant multiples of m to seed Q in guided search. The band does not change with the diagnostic-alpha slider.",
+        decision_rule="At the app's fixed alpha=.05 (95% reference) level, flag lag k when |r_k| > 1.96/sqrt(n). This is a pointwise white-noise heuristic, not a simultaneous band or a universal significance test for a general autocorrelated process.",
+        chrono_stream="The transformed/differenced series and fitted residuals are analyzed with statsmodels ACF. Chrono Stream records the fixed +/-1.96/sqrt(n) heuristic and uses flagged low lags to seed q and flagged multiples of m to seed Q in guided search. The visible charts and records call this a reference band, and it does not change with the diagnostic-alpha slider.",
         interpretation="A flagged lag is identification evidence of linear correlation, not proof that an MA term at that exact lag is required. A nonflagged lag may still contribute jointly or under a different model.",
         assumptions_and_caveats="Bands are approximate and pointwise; inspecting many lags creates multiplicity. Estimated trends, differencing, parameter fitting, and nonwhite data alter sampling variance. ACF cutoff/tail patterns are heuristics whose textbook forms are clearest for ideal low-order processes.",
         literature_review="Bartlett (1946) developed the sampling theory of autocorrelations for stationary time series, while Quenouille (1949) developed approximate correlation tests and autoregressive goodness-of-fit procedures. Box and Jenkins (1970) integrated the ACF into ARIMA identification and residual checking. Modern +/-1.96/sqrt(n) lines are a convenient white-noise approximation, not a universal significance theorem; Chrono Stream consequently uses them to generate candidates and still requires fitted-model diagnostics.",
@@ -513,12 +513,11 @@ SARIMA_DECISION_AID_KEYS = (
 
 
 def test_keys_for_model(model_id: str) -> tuple[str, ...]:
-    """Return formal tests and decision aids documented for ARIMA or SARIMA."""
-    if model_id == "arima":
-        return (*ARIMA_TEST_KEYS, *ARIMA_DECISION_AID_KEYS)
-    if model_id == "sarima":
-        return (*SARIMA_TEST_KEYS, *SARIMA_DECISION_AID_KEYS)
-    return ()
+    """Return the tests and decision aids declared by the method registry."""
+    from .registry import METHOD_REGISTRY
+
+    spec = METHOD_REGISTRY.get(model_id)
+    return spec.statistical_test_keys if spec is not None else ()
 
 
 def copy_ready_test_note(key: str) -> str:

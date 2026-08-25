@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from chrono_stream.literature_reviews import METHOD_LITERATURE_REVIEWS
 from chrono_stream.method_info import METHOD_INFORMATION, copy_ready_method_note
-from chrono_stream.models import MODEL_NAMES
+from chrono_stream.registry import MODEL_NAMES
 
 
 class MethodInformationTests(unittest.TestCase):
@@ -67,10 +67,27 @@ class MethodInformationTests(unittest.TestCase):
             self.assertIn(term, sarima.chrono_stream)
 
     def test_stl_note_does_not_misrepresent_x11(self) -> None:
-        information = METHOD_INFORMATION["x11"]
+        information = METHOD_INFORMATION["stl"]
         self.assertIn("not official X-11", information.limitations)
         self.assertIn("not an implementation of Census X-11", information.citation_ready)
         self.assertIn("actually executed", information.references[-1].contribution)
+
+    def test_new_method_notes_preserve_source_and_implementation_boundaries(self) -> None:
+        mstl = METHOD_INFORMATION["mstl_ets"]
+        self.assertIn("not a forecasting algorithm prescribed", mstl.limitations)
+        self.assertIn("decomposition rather than a complete forecast rule", mstl.citation_ready)
+
+        nbeats = METHOD_INFORMATION["nbeats"]
+        self.assertIn("generic N-BEATS", nbeats.chrono_stream)
+        self.assertIn("does not reproduce", nbeats.citation_ready)
+
+        tcn = METHOD_INFORMATION["tcn"]
+        self.assertIn("not WaveNet", tcn.limitations)
+        self.assertIn("rather than reproducing", tcn.citation_ready)
+
+        croston = METHOD_INFORMATION["croston_family"]
+        self.assertIn("Exact zero means no demand", croston.chrono_stream)
+        self.assertEqual(len(croston.references), 3)
 
 
 if __name__ == "__main__":

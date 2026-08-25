@@ -67,6 +67,41 @@ class DataPreparationTests(unittest.TestCase):
         self.assertEqual(prepared["value"].tolist(), list(map(float, range(8))))
         self.assertTrue(pd.DatetimeIndex(prepared["date"]).is_month_end.all())
 
+    def test_sum_resampling_preserves_empty_periods_for_missing_value_handling(self) -> None:
+        raw = pd.DataFrame(
+            {
+                "date": pd.to_datetime(
+                    [
+                        "2024-01-01",
+                        "2024-02-01",
+                        "2024-04-01",
+                        "2024-05-01",
+                        "2024-07-01",
+                        "2024-08-01",
+                        "2024-09-01",
+                        "2024-10-01",
+                    ]
+                ),
+                "value": [10, 20, 40, 50, 70, 80, 90, 100],
+            }
+        )
+        prepared, report = prepare_time_series(
+            raw,
+            "date",
+            "value",
+            frequency="MS",
+            regularize=True,
+            missing_method="Interpolate",
+            duplicate_method="Sum",
+        )
+
+        self.assertEqual(report.missing_periods_created, 2)
+        self.assertNotIn(0.0, prepared["value"].tolist())
+        self.assertGreater(prepared.loc[2, "value"], 20.0)
+        self.assertLess(prepared.loc[2, "value"], 40.0)
+        self.assertGreater(prepared.loc[5, "value"], 50.0)
+        self.assertLess(prepared.loc[5, "value"], 70.0)
+
     def test_day_first_parsing(self) -> None:
         raw = pd.DataFrame(
             {

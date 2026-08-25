@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from chrono_stream.models import evaluate_and_forecast
+from chrono_stream.evaluation import evaluate_and_forecast
 
 
 class MachineLearningSmokeTests(unittest.TestCase):
@@ -14,7 +14,7 @@ class MachineLearningSmokeTests(unittest.TestCase):
         values = 50 + 0.4 * time + 4 * np.sin(2 * np.pi * time / 12)
         cls.data = pd.DataFrame({"Month": dates, "Value": values})
 
-    def assert_forecast(self, model_id: str, parameters: dict) -> None:
+    def assert_forecast(self, model_id: str, parameters: dict) -> dict:
         result = evaluate_and_forecast(
             model_id,
             self.data,
@@ -26,6 +26,7 @@ class MachineLearningSmokeTests(unittest.TestCase):
         self.assertEqual(len(result["forecast"]), 3)
         self.assertTrue(np.isfinite(result["forecast"]["Forecast"]).all())
         self.assertTrue(np.isfinite(result["metrics"]["RMSE"]))
+        return result
 
     def test_prophet(self) -> None:
         self.assert_forecast(
@@ -61,6 +62,43 @@ class MachineLearningSmokeTests(unittest.TestCase):
                 "batch_size": 8,
             },
         )
+
+    def test_nbeats(self) -> None:
+        result = self.assert_forecast(
+            "nbeats",
+            {
+                "lookback": 6,
+                "blocks": 1,
+                "hidden_layers": 1,
+                "hidden_units": 8,
+                "epochs": 1,
+                "batch_size": 8,
+                "learning_rate": 0.001,
+            },
+        )
+        details = result["model_details"]
+        self.assertEqual(details["multi_step_strategy"], "Direct multi-output horizon")
+        self.assertIn("N-BEATS", details["architecture"])
+        self.assertIn("not the paper's constrained", details["interpretability_note"])
+
+    def test_tcn(self) -> None:
+        result = self.assert_forecast(
+            "tcn",
+            {
+                "lookback": 8,
+                "filters": 8,
+                "kernel_size": 2,
+                "dilation_levels": 2,
+                "dropout": 0.0,
+                "epochs": 1,
+                "batch_size": 8,
+                "learning_rate": 0.001,
+            },
+        )
+        details = result["model_details"]
+        self.assertEqual(details["multi_step_strategy"], "Recursive")
+        self.assertEqual(details["dilations"], [1, 2])
+        self.assertIn("causal", details["causality"])
 
 
 if __name__ == "__main__":

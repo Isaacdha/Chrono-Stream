@@ -1,14 +1,19 @@
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
 
-from chrono_stream.arima_pipeline import (
+from chrono_stream.methods.statistical.box_jenkins_pipeline import (
     NoEligibleModelError,
     VarianceTransformer,
+    _correlation_records,
+    _diagnostic_requirements,
+    _heteroskedasticity_diagnostic,
+    candidate_search_space_size,
     fit_arima_pipeline,
 )
-from chrono_stream.models import evaluate_and_forecast
+from chrono_stream.evaluation import evaluate_and_forecast
 
 
 class VarianceTransformationTests(unittest.TestCase):
@@ -236,6 +241,78 @@ class BoxJenkinsPipelineTests(unittest.TestCase):
                 for candidate in details["candidate_results"]
             )
         )
+
+    def test_unbounded_candidate_lists_accept_orders_above_default_limits(self) -> None:
+        parameters = {
+            "automatic": False,
+            "search_strategy": "Manual candidate list",
+            "manual_p_values": "0,7",
+            "manual_q_values": "0",
+            "max_order": 7,
+        }
+        with self.assertRaisesRegex(ValueError, "unbounded orders"):
+            candidate_search_space_size(parameters, seasonal=False)
+
+        parameters["allow_unbounded_orders"] = True
+        self.assertEqual(
+            candidate_search_space_size(parameters, seasonal=False),
+            2,
+        )
+
+    def test_more_than_250_candidates_warns_but_is_not_rejected(self) -> None:
+        values = self.ar_process(0.72, 80, 123)
+        parameters = {
+            "automatic": True,
+            "allow_unbounded_orders": True,
+            "search_strategy": "Exhaustive grid",
+            "max_p": 250,
+            "max_q": 0,
+            "max_order": 250,
+            "difference_mode": "Manual",
+            "d": 0,
+            "transformation": "None",
+            "diagnostic_policy": "Advisory",
+            "trend": "None",
+            "acf_lags": 10,
+        }
+        with patch(
+            "chrono_stream.methods.statistical.box_jenkins_pipeline._fit_candidate",
+            side_effect=RuntimeError("synthetic fit failure"),
+        ):
+            with self.assertWarnsRegex(RuntimeWarning, "251 tentative candidate models"):
+                with self.assertRaises(NoEligibleModelError) as raised:
+                    fit_arima_pipeline(values, 3, parameters, seasonal=False)
+
+        details = raised.exception.details
+        self.assertEqual(details["candidate_models_configured"], 251)
+        self.assertEqual(details["models_evaluated"], 251)
+        self.assertIn("150-model warning threshold", details["candidate_warning"])
+
+class DiagnosticSemanticsTests(unittest.TestCase):
+    def test_forecast_oriented_arch_toggle_is_honored(self) -> None:
+        requirements = _diagnostic_requirements(
+            {
+                "diagnostic_policy": "Forecast-oriented",
+                "require_heteroskedasticity": True,
+            }
+        )
+        self.assertTrue(requirements["heteroskedasticity"])
+
+    def test_arch_lm_rejects_an_insufficient_ddof_adjustment(self) -> None:
+        result = _heteroskedasticity_diagnostic(
+            np.linspace(-1.0, 1.0, 12),
+            model_df=10,
+            alpha=0.05,
+        )
+        self.assertFalse(result["passed"])
+        self.assertIsNone(result["statistic"])
+        self.assertIn("insufficient", result["error"])
+
+    def test_correlation_flags_are_labeled_as_heuristic_references(self) -> None:
+        records = _correlation_records(np.arange(30, dtype=float), maximum_lag=5)
+        self.assertIn("heuristic", records["reference_band_method"].lower())
+        self.assertIn("outside_reference_band", records["acf"][1])
+        self.assertNotIn("significant", records["acf"][1])
 
 
 if __name__ == "__main__":

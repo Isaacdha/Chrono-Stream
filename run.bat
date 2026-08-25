@@ -8,4 +8,4 @@ if not exist ".venv\Scripts\python.exe" (
     exit /b 1
 )
 
-".venv\Scripts\python.exe" -m streamlit run chrono_app.py
+".venv\Scripts\python.exe" -B -m streamlit run chrono_app.py

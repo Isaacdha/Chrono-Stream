@@ -3,12 +3,13 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from chrono_stream.models import (
-    MODEL_NAMES,
+from chrono_stream import MODEL_NAMES
+from chrono_stream.evaluation import (
     evaluate_and_forecast,
     forecast_model,
     regression_metrics,
 )
+from chrono_stream.evaluation import ACCURACY_METRIC_KEYS
 
 
 class ForecastModelTests(unittest.TestCase):
@@ -25,12 +26,22 @@ class ForecastModelTests(unittest.TestCase):
         self.assertEqual(len(result["backtest"]), 6)
         self.assertTrue(np.isfinite(result["forecast"]["Forecast"]).all())
         self.assertTrue(np.isfinite(result["metrics"]["RMSE"]))
-        self.assertTrue(
-            (result["forecast"]["Lower 95%"] <= result["forecast"]["Upper 95%"]).all()
-        )
+        self.assertEqual(tuple(result["metrics"]), ACCURACY_METRIC_KEYS)
+        lower = result["forecast"]["Lower interval"].to_numpy(dtype=float)
+        upper = result["forecast"]["Upper interval"].to_numpy(dtype=float)
+        if result["model_details"]["interval_available"]:
+            self.assertTrue(np.isfinite(lower).all())
+            self.assertTrue(np.isfinite(upper).all())
+            self.assertTrue((lower <= upper).all())
+        else:
+            self.assertTrue(np.isnan(lower).all())
+            self.assertTrue(np.isnan(upper).all())
 
     def test_lightweight_models_share_the_result_contract(self) -> None:
         cases = {
+            "naive": {},
+            "seasonal_naive": {"seasonal_period": 12},
+            "drift": {},
             "moving_average": {"window": 6},
             "weighted_moving_average": {"window": 6, "weighting": "Linear"},
             "single_exponential_smoothing": {"alpha": None},
@@ -50,7 +61,7 @@ class ForecastModelTests(unittest.TestCase):
                 "Q": 1,
                 "seasonal_period": 12,
             },
-            "x11": {"seasonal_period": 12, "robust": True},
+            "stl": {"seasonal_period": 12, "robust": True},
             "linear": {},
             "quadratic": {},
             "exponential": {},
@@ -68,11 +79,16 @@ class ForecastModelTests(unittest.TestCase):
                 )
                 self.assert_valid_result(result)
 
-    def test_metrics_handle_zero_actual_values(self) -> None:
-        metrics = regression_metrics([0, 2, 4], [1, 2, 5])
+    def test_metrics_handle_zero_actual_values_without_hiding_mape_terms(self) -> None:
+        metrics = regression_metrics(
+            [0, 2, 4], [1, 2, 5], training_actual=[0, 1, 0, 2]
+        )
         self.assertTrue(np.isfinite(metrics["MAE"]))
-        self.assertTrue(np.isfinite(metrics["MAPE"]))
+        self.assertTrue(np.isnan(metrics["MAPE"]))
         self.assertTrue(np.isfinite(metrics["sMAPE"]))
+        self.assertTrue(np.isfinite(metrics["MASE"]))
+        self.assertTrue(np.isfinite(metrics["RMSSE"]))
+        self.assertTrue(np.isfinite(metrics["WAPE"]))
 
     def test_automatic_arima_selects_and_reports_orders(self) -> None:
         result = evaluate_and_forecast(
@@ -164,6 +180,36 @@ class ForecastModelTests(unittest.TestCase):
         self.assertEqual(triple["model_details"]["selection"], "Manual")
         self.assertAlmostEqual(triple["model_details"]["smoothing_seasonal"], 0.2)
 
+    def test_manual_holt_parameters_must_be_admissible(self) -> None:
+        dates = pd.DatetimeIndex(self.data.iloc[:, 0])
+        values = self.data.iloc[:, 1].to_numpy(dtype=float)
+        future = pd.date_range(dates[-1] + pd.offsets.MonthBegin(), periods=2, freq="MS")
+        with self.assertRaisesRegex(ValueError, r"beta must be in \[0, alpha\]"):
+            forecast_model(
+                "double_exponential_smoothing",
+                values,
+                2,
+                {"alpha": 0.2, "beta": 0.5, "damped": False},
+                dates=dates,
+                forecast_dates=future,
+            )
+        with self.assertRaisesRegex(ValueError, r"gamma must be in \[0, 1 - alpha\]"):
+            forecast_model(
+                "triple_exponential_smoothing",
+                values,
+                2,
+                {
+                    "seasonal_period": 12,
+                    "trend": "add",
+                    "seasonal": "add",
+                    "alpha": 0.8,
+                    "beta": 0.1,
+                    "gamma": 0.4,
+                    "damped": False,
+                },
+                dates=dates,
+                forecast_dates=future,
+            )
     def test_exponential_trend_uses_duan_smearing_retransformation(self) -> None:
         time = np.arange(1, 25, dtype=float)
         log_errors = np.tile(np.asarray([-0.45, 0.05, 0.40, 0.00]), 6)
@@ -194,14 +240,14 @@ class ForecastModelTests(unittest.TestCase):
 
     def test_stl_forecast_is_labeled_as_stl_not_official_x11(self) -> None:
         result = evaluate_and_forecast(
-            "x11",
+            "stl",
             self.data,
             horizon=4,
             holdout=6,
             params={"seasonal_period": 12, "robust": True},
             frequency="MS",
         )
-        self.assertIn("STL", MODEL_NAMES["x11"])
+        self.assertIn("STL", MODEL_NAMES["stl"])
         self.assertEqual(result["model_details"]["decomposition"], "STL")
         self.assertFalse(result["model_details"]["official_x11"])
 

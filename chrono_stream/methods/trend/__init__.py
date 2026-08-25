@@ -1,0 +1,1 @@
+"""Deterministic trend-projection methods."""

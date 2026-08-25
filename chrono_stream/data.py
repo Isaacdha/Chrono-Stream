@@ -142,10 +142,13 @@ def prepare_time_series(
     missing_periods = 0
     if regularize and resolved_frequency:
         try:
+            resampler = data.set_index(date_column)[[value_column]].resample(
+                to_offset(resolved_frequency)
+            )
             indexed = (
-                data.set_index(date_column)[[value_column]]
-                .resample(to_offset(resolved_frequency))
-                .agg(aggregation)
+                resampler.sum(min_count=1)
+                if aggregation == "sum"
+                else resampler.agg(aggregation)
             )
         except (TypeError, ValueError) as exc:
             raise ValueError(f"Invalid time frequency '{resolved_frequency}'.") from exc
